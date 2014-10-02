@@ -20,7 +20,7 @@ set (C_SOURCE_FILE_CONTENTS
      "#include <Header.h>\n")
 file (WRITE ${C_SOURCE_FILE} ${C_SOURCE_FILE_CONTENTS})
 
-psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES
+psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES HEADERS
                                SOURCES
                                ${C_SOURCE_FILE}
                                ${CXX_SOURCE_FILE}
