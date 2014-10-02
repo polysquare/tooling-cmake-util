@@ -176,7 +176,7 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
 
 endfunction (psq_forward_options)
 
-function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES)
+function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
     set (SORT_SOURCES_SINGLEVAR_OPTIONS FORCE_LANGUAGE)
     set (SORT_SOURCES_MULTIVAR_OPTIONS
@@ -190,9 +190,9 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES)
                            ${ARGN})
 
     psq_forward_options (SORT_SOURCES
-                                    DETERMINE_LANG_OPTIONS
-                                    SINGLEVAR_ARGS FORCE_LANGUAGE
-                                    MULTIVAR_ARGS CPP_IDENTIFIERS INCLUDES)
+                         DETERMINE_LANG_OPTIONS
+                         SINGLEVAR_ARGS FORCE_LANGUAGE
+                         MULTIVAR_ARGS CPP_IDENTIFIERS INCLUDES)
 
     foreach (SOURCE ${SORT_SOURCES_SOURCES})
 
@@ -219,7 +219,6 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES)
 
         list (FIND LANGUAGE "C" C_INDEX)
         list (FIND LANGUAGE "CXX" CXX_INDEX)
-        message ("FOUND LANG ${LANGUAGE} FOR ${SOURCE}")
 
         if (NOT C_INDEX EQUAL -1)
 
@@ -233,10 +232,17 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES)
 
         endif (NOT CXX_INDEX EQUAL -1)
 
+        if (SOURCE_WAS_HEADER)
+
+            list (APPEND _HEADERS ${SOURCE})
+
+        endif (SOURCE_WAS_HEADER)
+
     endforeach ()
 
     set (${C_SOURCES} ${_C_SOURCES} PARENT_SCOPE)
     set (${CXX_SOURCES} ${_CXX_SOURCES} PARENT_SCOPE)
+    set (${HEADERS} ${_HEADERS} PARENT_SCOPE)
 
 endfunction (psq_sort_sources_to_languages)
 

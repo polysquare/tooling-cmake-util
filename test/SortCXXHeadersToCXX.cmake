@@ -16,7 +16,7 @@ set (SOURCE_FILE_CONTENTS
      "#include <Header.h>\n")
 file (WRITE ${SOURCE_FILE} ${SOURCE_FILE_CONTENTS})
 
-psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES
+psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES HEADERS
                                SOURCES ${SOURCE_FILE} ${HEADER_FILE}
                                INCLUDES ${CMAKE_CURRENT_BINARY_DIR})
 
