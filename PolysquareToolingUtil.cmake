@@ -102,11 +102,12 @@ endfunction (psq_add_switch)
 
 function (psq_assert_set VARIABLE)
 
-    if (NOT VARIABLE)
+    if (NOT ${VARIABLE})
 
-        message (FATAL_ERROR "${ARGN}")
+        string (REPLACE ";" "" MSG "${ARGN}")
+        message (FATAL_ERROR "${MSG}")
 
-    endif (NOT VARIABLE)
+    endif (NOT ${VARIABLE})
 
 endfunction (psq_assert_set)
 
