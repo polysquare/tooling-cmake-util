@@ -30,6 +30,12 @@ set (POLYSQUARE_INITIAL_CACHE_CONTENTS
      "     CACHE STRING \"\" FORCE)\n"
      "set (POLYSQUARE_TOOLING_CMAKE_TESTS_DIRECTORY\n"
      "     ${CMAKE_UNIT_DIRECTORY}\n"
+     "     CACHE STRING \"\" FORCE)\n"
+     "set (CMAKE_C_COMPILER\n"
+     "     ${CMAKE_C_COMPILER}\n"
+     "     CACHE STRING \"\" FORCE)\n"
+     "set (CMAKE_CXX_COMPILER\n"
+     "     ${CMAKE_CXX_COMPILER}\n"
      "     CACHE STRING \"\" FORCE)\n")
 
 set (CMAKE_MODULE_PATH
@@ -63,3 +69,12 @@ add_cmake_test (AddSwitchOff)
 add_cmake_test (AppendEachToOptionsWithPrefix)
 add_cmake_test (AppendEachToGlobalProperty)
 add_cmake_test (AppendEachToGlobalPropertyUnique)
+add_cmake_test (GetListIntersection)
+add_cmake_test (SpecialCompilationDBDefines)
+add_cmake_test (SpecialCompilationDBIncludes)
+add_cmake_test (SpecialCompilationDBUseCCompilerForCHeader)
+add_cmake_test (SpecialCompilationDBUseCFlagsForCHeader)
+add_cmake_test (SpecialCompilationDBUseCLanguageOptForCHeader)
+add_cmake_test (SpecialCompilationDBUseCXXCompilerForCPPHeader)
+add_cmake_test (SpecialCompilationDBUseCXXFlagsForCPPHeader)
+add_cmake_test (SpecialCompilationDBUseCXXLanguageOptForCPPHeader)
