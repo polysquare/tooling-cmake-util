@@ -28,7 +28,5 @@ psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES HEADERS
                                INCLUDES ${CMAKE_CURRENT_BINARY_DIR}
                                CPP_IDENTIFIERS IS_CPP_AND_C)
 
-message ("C_SOURCES ${C_SOURCES} CXX_SOURCES ${CXX_SOURCES}")
-
 assert_list_contains_value (CXX_SOURCES STRING EQUAL ${HEADER_FILE})
 assert_list_contains_value (C_SOURCES STRING EQUAL ${HEADER_FILE})

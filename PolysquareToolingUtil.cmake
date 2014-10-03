@@ -59,6 +59,35 @@ function (psq_append_to_global_property PROPERTY)
 
 endfunction (psq_append_to_global_property)
 
+function (psq_get_list_intersection DESTINATION)
+
+    set (INTERSECT_MULTIVAR_ARGS SOURCE INTERSECTION)
+    cmake_parse_arguments (INTERSECT
+                           ""
+                           ""
+                           "${INTERSECT_MULTIVAR_ARGS}"
+                           ${ARGN})
+
+    foreach (SOURCE_ITEM ${INTERSECT_SOURCE})
+
+        list (FIND INTERSECT_INTERSECTION ${SOURCE_ITEM} SOURCE_INDEX)
+
+        if (NOT SOURCE_INDEX EQUAL -1)
+
+            list (APPEND _DESTINATION ${SOURCE_ITEM})
+
+        endif (NOT SOURCE_INDEX EQUAL -1)
+
+    endforeach ()
+
+    # Append and set in parent scope
+    set (${DESTINATION}
+         ${${DESTINATION}}
+         ${_DESTINATION}
+         PARENT_SCOPE)
+
+endfunction (psq_get_list_intersection)
+
 function (psq_append_each_to_options_with_prefix MAIN_LIST PREFIX)
 
     cmake_parse_arguments (APPEND
@@ -342,3 +371,152 @@ function (psq_get_target_command_attach_point TARGET ATTACH_POINT_RETURN)
     set (${ATTACH_POINT_RETURN} ${_ATTACH_POINT} PARENT_SCOPE)
 
 endfunction (psq_get_target_command_attach_point)
+
+function (psq_make_compilation_db TARGET
+                                  CUSTOM_COMPILATION_DB_DIR_RETURN)
+
+    set (MAKE_COMP_DB_OPTIONS)
+    set (MAKE_COMP_DB_SINGLEVAR_OPTIONS)
+    set (MAKE_COMP_DB_MULTIVAR_OPTIONS
+         C_SOURCES
+         CXX_SOURCES
+         INTERNAL_INCLUDE_DIRS
+         EXTERNAL_INCLUDE_DIRS
+         DEFINES)
+
+    cmake_parse_arguments (MAKE_COMP_DB
+                           "${MAKE_COMP_DB_OPTIONS}"
+                           "${MAKE_COMP_DB_SINGLEVAR_OPTIONS}"
+                           "${MAKE_COMP_DB_MULTIVAR_OPTIONS}"
+                           ${ARGN})
+
+    # Don't write anything if we don't have to
+    if (NOT MAKE_COMP_DB_C_SOURCES AND NOT MAKE_COMP_DB_CXX_SOURCES)
+
+        return ()
+
+    endif (NOT MAKE_COMP_DB_C_SOURCES AND NOT MAKE_COMP_DB_CXX_SOURCES)
+
+    set (CUSTOM_COMPILATION_DB_DIR
+         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_compile_commands/)
+    set (COMPILATION_DB_FILE
+         ${CUSTOM_COMPILATION_DB_DIR}/compile_commands.json)
+
+    set (COMPILATION_DB_FILE_CONTENTS
+         "[")
+
+    foreach (C_SOURCE ${MAKE_COMP_DB_C_SOURCES})
+
+        list (APPEND SOURCES_LANGUAGES "C,${C_SOURCE}")
+
+    endforeach ()
+
+    foreach (CXX_SOURCE ${MAKE_COMP_DB_CXX_SOURCES})
+
+        list (APPEND SOURCES_LANGUAGES "CXX,${CXX_SOURCE}")
+
+    endforeach ()
+
+    foreach (SOURCE_LANGUAGE ${SOURCES_LANGUAGES})
+
+        string (REPLACE "," ";" SOURCE_LANGUAGE "${SOURCE_LANGUAGE}")
+
+        list (GET SOURCE_LANGUAGE 0 LANGUAGE)
+        list (GET SOURCE_LANGUAGE 1 SOURCE)
+
+        get_filename_component (FULL_PATH ${SOURCE} ABSOLUTE)
+        get_filename_component (BASENAME ${SOURCE} NAME)
+
+        set (COMPILATION_DB_FILE_CONTENTS
+             "${COMPILATION_DB_FILE_CONTENTS}\n{\n"
+             "\"directory\": \"${CMAKE_CURRENT_BINARY_DIR}\",\n"
+             "\"command\": \"")
+
+        # Compiler and language options
+        if (LANGUAGE STREQUAL "CXX")
+
+             list (APPEND COMPILER_COMMAND_LINE
+                   ${CMAKE_CXX_COMPILER}
+                   -x
+                   c++)
+
+        elseif (LANGUAGE STREQUAL "C")
+
+            list (APPEND COMPILER_COMMAND_LINE
+                  ${CMAKE_C_COMPILER})
+
+        endif (LANGUAGE STREQUAL "CXX")
+
+        # Fake output file etc.
+        list (APPEND COMPILER_COMMAND_LINE
+              -o
+              "CMakeFiles/${TARGET}.dir/${BASENAME}.o"
+              -c
+              ${FULL_PATH})
+
+        # All includes
+        psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
+                                                -isystem
+                                                LIST ${MAKE_COMP_DB_EXTERNAL_INCLUDE_DIRS})
+        psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
+                                                -I
+                                                LIST ${MAKE_COMP_DB_INTERNAL_INCLUDE_DIRS})
+
+        # All defines
+        psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
+                                                -D
+                                                LIST ${MAKE_COMP_DB_DEFINES})
+
+
+        # CXXFLAGS / CFLAGS
+        if (LANGUAGE STREQUAL "CXX")
+
+            list (APPEND COMPILER_COMMAND_LINE
+                  ${CMAKE_CXX_FLAGS})
+
+        elseif (LANGUAGE STREQUAL "C")
+
+            list (APPEND COMPILER_COMMAND_LINE
+                  ${CMAKE_C_FLAGS})
+
+        endif (LANGUAGE STREQUAL "CXX")
+
+        string (REPLACE ";" " "
+                COMPILER_COMMAND_LINE "${COMPILER_COMMAND_LINE}")
+        set (COMPILATION_DB_FILE_CONTENTS
+             "${COMPILATION_DB_FILE_CONTENTS}${COMPILER_COMMAND_LINE}")
+
+        set (COMPILATION_DB_FILE_CONTENTS
+             "${COMPILATION_DB_FILE_CONTENTS}\",\n"
+             "\"file\": \"${FULL_PATH}\"\n"
+             "},")
+
+    endforeach ()
+
+    # Get rid of all the semicolons
+    string (REPLACE ";" ""
+            COMPILATION_DB_FILE_CONTENTS
+            "${COMPILATION_DB_FILE_CONTENTS}")
+
+    # Take away the last comma
+    string (LENGTH
+            "${COMPILATION_DB_FILE_CONTENTS}"
+            COMPILATION_DB_FILE_LENGTH)
+    math (EXPR TRIMMED_COMPILATION_DB_FILE_LENGTH
+          "${COMPILATION_DB_FILE_LENGTH} - 1")
+    string (SUBSTRING "${COMPILATION_DB_FILE_CONTENTS}"
+            0 ${TRIMMED_COMPILATION_DB_FILE_LENGTH}
+            COMPILATION_DB_FILE_CONTENTS)
+
+    # Final "]"
+    set (COMPILATION_DB_FILE_CONTENTS
+         "${COMPILATION_DB_FILE_CONTENTS}\n]\n")
+
+    # Write out
+    file (WRITE ${COMPILATION_DB_FILE}
+          ${COMPILATION_DB_FILE_CONTENTS})
+
+    set (${CUSTOM_COMPILATION_DB_DIR_RETURN}
+         ${CUSTOM_COMPILATION_DB_DIR} PARENT_SCOPE)
+
+endfunction (psq_make_compilation_db)
