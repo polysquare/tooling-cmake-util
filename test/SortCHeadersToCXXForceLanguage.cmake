@@ -29,3 +29,4 @@ psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES HEADERS
                                FORCE_LANGUAGE CXX)
 
 assert_list_contains_value (CXX_SOURCES STRING EQUAL ${HEADER_FILE})
+assert_list_contains_value (HEADERS STRING EQUAL ${HEADER_FILE})

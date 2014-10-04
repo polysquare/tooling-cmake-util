@@ -226,26 +226,20 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
     foreach (SOURCE ${SORT_SOURCES_SOURCES})
 
-        set (LANGUAGE ${SORT_SOURCES_FORCE_LANGUAGE})
+        set (INCLUDES ${SORT_SOURCES_INCLUDES})
+        set (CPP_IDENTIFIERS ${SORT_SOURCES_CPP_IDENTIFIERS})
+        polysquare_determine_language_for_source (${SOURCE}
+                                                  LANGUAGE
+                                                  SOURCE_WAS_HEADER
+                                                  ${DETERMINE_LANG_OPTIONS})
 
-        if (NOT LANGUAGE)
+        # Scan this source for headers, we'll need them later
+        if (NOT SOURCE_WAS_HEADER)
 
-            set (INCLUDES ${SORT_SOURCES_INCLUDES})
-            set (CPP_IDENTIFIERS ${SORT_SOURCES_CPP_IDENTIFIERS})
-            polysquare_determine_language_for_source (${SOURCE}
-                                                      LANGUAGE
-                                                      SOURCE_WAS_HEADER
-                                                      ${DETERMINE_LANG_OPTIONS})
+            polysquare_scan_source_for_headers (SOURCE ${SOURCE}
+                                                ${DETERMINE_LANG_OPTIONS})
 
-            # Scan this source for headers, we'll need them later
-            if (NOT SOURCE_WAS_HEADER)
-
-                polysquare_scan_source_for_headers (SOURCE ${SOURCE}
-                                                    ${DETERMINE_LANG_OPTIONS})
-
-            endif (NOT SOURCE_WAS_HEADER)
-
-        endif (NOT LANGUAGE)
+        endif (NOT SOURCE_WAS_HEADER)
 
         list (FIND LANGUAGE "C" C_INDEX)
         list (FIND LANGUAGE "CXX" CXX_INDEX)
