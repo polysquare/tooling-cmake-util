@@ -5,8 +5,8 @@
 #
 # See LICENCE.md for Copyright information
 
-include (${POLYSQUARE_TOOLING_CMAKE_DIRECTORY}/PolysquareToolingUtil.cmake)
-include (${POLYSQUARE_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (PolysquareToolingUtil)
+include (CMakeUnit)
 
 set (HEADER_FILE ${CMAKE_CURRENT_BINARY_DIR}/Header.h)
 set (C_SOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/Source.c)
