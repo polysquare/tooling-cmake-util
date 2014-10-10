@@ -4,8 +4,8 @@
 #
 # See LICENCE.md for Copyright information.
 
-include (${POLYSQUARE_TOOLING_CMAKE_DIRECTORY}/PolysquareToolingUtil.cmake)
-include (${POLYSQUARE_TOOLING_CMAKE_TESTS_DIRECTORY}/CMakeUnit.cmake)
+include (PolysquareToolingUtil)
+include (CMakeUnit)
 
 set (OPTION_IS_OFF OFF)
 

@@ -25,12 +25,6 @@ set (CMAKE_UNIT_DIRECTORY
 # Put our directories into the cache as well as the parameters for the
 # Google Test distribution.
 set (POLYSQUARE_INITIAL_CACHE_CONTENTS
-     "set (POLYSQUARE_TOOLING_CMAKE_DIRECTORY\n"
-     "     ${POLYSQUARE_TOOLING_CMAKE_DIRECTORY}\n"
-     "     CACHE STRING \"\" FORCE)\n"
-     "set (POLYSQUARE_TOOLING_CMAKE_TESTS_DIRECTORY\n"
-     "     ${CMAKE_UNIT_DIRECTORY}\n"
-     "     CACHE STRING \"\" FORCE)\n"
      "set (CMAKE_C_COMPILER\n"
      "     ${CMAKE_C_COMPILER}\n"
      "     CACHE STRING \"\" FORCE)\n"
@@ -40,7 +34,15 @@ set (POLYSQUARE_INITIAL_CACHE_CONTENTS
 
 set (CMAKE_MODULE_PATH
      ${CMAKE_UNIT_DIRECTORY}
+     ${POLYSQUARE_TOOLING_CMAKE_DIRECTORY}
      ${CMAKE_MODULE_PATH})
+
+foreach (PATH ${CMAKE_MODULE_PATH})
+     set (POLYSQUARE_INITIAL_CACHE_CONTENTS
+          "${POLYSQUARE_INITIAL_CACHE_CONTENTS}\n"
+          "set (CMAKE_MODULE_PATH ${PATH} \${CMAKE_MODULE_PATH}\n"
+          "     CACHE STRING \"\" FORCE)\n")
+endforeach ()
 
 include (CMakeUnitRunner)
 
