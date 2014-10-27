@@ -329,23 +329,36 @@ function (psq_handle_check_generated_option PREFIX SOURCES_RETURN)
 
 endfunction (psq_handle_check_generated_option)
 
-function (psq_strip_add_custom_target_sources RETURN_SOURCES TARGET)
+# psq_strip_extraneous_source
+#
+# Fetches the target's SOURCES property, but removes any non-linkable
+# and non-header sources from it, storing the result in RETURN_SOURCES.
+#
+# Most tools choke on being passed these sources, so its better to strip
+# them out as early as possible
+#
+# RETURN_SOURCES: Variable to store returned sources in
+# TARGET: Target to fetch sources from
+function (psq_strip_extraneous_sources RETURN_SOURCES TARGET)
 
-    get_target_property (_sources ${TARGET} SOURCES)
-    list (GET _sources 0 _first_source)
-    string (FIND "${_first_source}" "/" LAST_SLASH REVERSE)
-    math (EXPR LAST_SLASH "${LAST_SLASH} + 1")
-    string (SUBSTRING "${_first_source}" ${LAST_SLASH} -1 END_OF_SOURCE)
+    get_target_property (TARGET_SOURCES ${TARGET} SOURCES)
 
-    if (END_OF_SOURCE STREQUAL "${TARGET}")
+    foreach (SOURCE ${TARGET_SOURCES})
 
-        list (REMOVE_AT _sources 0)
+        polysquare_source_type_from_source_file_extension (${SOURCE}
+                                                           SOURCE_TYPE)
 
-    endif (END_OF_SOURCE STREQUAL "${TARGET}")
+        if (NOT SOURCE_TYPE STREQUAL "UNKNOWN")
 
-    set (${RETURN_SOURCES} ${_sources} PARENT_SCOPE)
+            list (APPEND STRIPPED_SOURCES ${SOURCE})
 
-endfunction (psq_strip_add_custom_target_sources)
+        endif (NOT SOURCE_TYPE STREQUAL "UNKNOWN")
+
+    endforeach ()
+
+    set (${RETURN_SOURCES} ${STRIPPED_SOURCES} PARENT_SCOPE)
+
+endfunction (psq_strip_extraneous_sources)
 
 function (psq_get_target_command_attach_point TARGET ATTACH_POINT_RETURN)
 
@@ -423,8 +436,8 @@ function (psq_run_tool_for_each_source TARGET TOOL_NAME)
                            "${RUN_COMMAND_MULTIVAR_ARGS}"
                            ${ARGN})
 
-    psq_strip_add_custom_target_sources (FILTERED_SOURCES
-                                         ${TARGET})
+    psq_strip_extraneous_sources (FILTERED_SOURCES
+                                  ${TARGET})
     psq_handle_check_generated_option (RUN_COMMAND FILTERED_SOURCES
                                        SOURCES ${FILTERED_SOURCES})
 

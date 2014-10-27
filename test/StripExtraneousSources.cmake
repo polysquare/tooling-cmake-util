@@ -1,4 +1,4 @@
-# /tests/StripAddCustomTargetSources.cmake
+# /tests/StripExtraneousSources.cmake
 #
 # Adds a custom target with some SOURCES and call
 # psq_strip_add_custom_target_sources on it. The returned list should
@@ -15,7 +15,7 @@ file (WRITE ${SOURCE_FILE} "")
 add_custom_target (my_custom_target ALL
                    SOURCES ${SOURCE_FILE})
 
-psq_strip_add_custom_target_sources (FILTERED_SOURCES my_custom_target)
+psq_strip_extraneous_sources (FILTERED_SOURCES my_custom_target)
 
 assert_list_contains_value (FILTERED_SOURCES STRING EQUAL ${SOURCE_FILE})
 
