@@ -1,9 +1,19 @@
 language: cpp
+env:
+  - CMAKE_GENERATOR="Unix Makefiles"
+  - CMAKE_GENERATOR="Ninja"
 before_install:
   - git submodule update --init --recursive
   - sudo apt-add-repository -y ppa:kalakris/cmake
   - sudo apt-get update -qq
   - sudo apt-get install -qq `cat DEPENDENCIES`
+  - cmake --version
+  # Workaround to get Ninja to display verbose output
+  - if [[ $CMAKE_GENERATOR == "Ninja" ]] ; then
+     echo -e '!#/bin/bash\n/usr/bin/ninja -v $@' > ninja;
+     chmod +x ninja;
+     export PATH=`pwd`:${PATH};
+    fi
 script:
   - mkdir -p test/build
   - pushd test/build

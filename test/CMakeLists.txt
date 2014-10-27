@@ -64,3 +64,21 @@ add_cmake_test (SpecialCompilationDBUseCLanguageOptForCHeader)
 add_cmake_test (SpecialCompilationDBUseCXXCompilerForCPPHeader)
 add_cmake_test (SpecialCompilationDBUseCXXFlagsForCPPHeader)
 add_cmake_test (SpecialCompilationDBUseCXXLanguageOptForCPPHeader)
+
+add_cmake_build_test (RunToolOnSource
+                      RunToolOnSourceVerify)
+add_cmake_build_test (RunToolOnSourceGeneratesStampfile
+                      RunToolOnSourceGeneratesStampfileVerify)
+add_cmake_build_test (RunToolOnSourceNotRunAgainIfStampfileExists
+                      RunToolOnSourceNotRunAgainIfStampfileExistsVerify)
+add_cmake_build_test (RunToolOnSources
+                      RunToolOnSourcesVerify)
+add_cmake_build_test (RunToolOnSourcesFilterGenerated
+                      RunToolOnSourcesFilterGeneratedVerify)
+add_cmake_build_test (RunToolOnSourcesCheckGenerated
+                      RunToolOnSourcesCheckGeneratedVerify)
+
+if (NOT CMAKE_GENERATOR STREQUAL "Ninja")
+    add_cmake_build_test (RunToolOnSourceHasComment
+                          RunToolOnSourceHasCommentVerify)
+endif (NOT CMAKE_GENERATOR STREQUAL "Ninja")

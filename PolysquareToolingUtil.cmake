@@ -367,6 +367,83 @@ function (psq_get_target_command_attach_point TARGET ATTACH_POINT_RETURN)
 
 endfunction (psq_get_target_command_attach_point)
 
+function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
+
+    set (RUN_TOOL_ON_SOURCE_SINGLEVAR_ARGS WORKING_DIRECTORY)
+    set (RUN_TOOL_ON_SOURCE_MULTIVAR_ARGS COMMAND)
+    cmake_parse_arguments (RUN_TOOL_ON_SOURCE
+                           ""
+                           "${RUN_TOOL_ON_SOURCE_SINGLEVAR_ARGS}"
+                           "${RUN_TOOL_ON_SOURCE_MULTIVAR_ARGS}"
+                           ${ARGN})
+
+    # Replace @SOURCE@ with SOURCE in RUN_COMMAND_COMMAND here
+    string (CONFIGURE "${RUN_TOOL_ON_SOURCE_COMMAND}" COMMAND @ONLY)
+
+    # Get the basename of the file, used for the comment and stamp.
+    get_filename_component (SRCNAME ${SOURCE} NAME)
+    set (STAMPFILE
+         ${CMAKE_CURRENT_BINARY_DIR}/${SRCNAME}.${TOOL_NAME}.stamp)
+    set (COMMENT "Analyzing ${SRCNAME} with ${TOOL_NAME}")
+
+    if (RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY)
+
+        set (WORKING_DIRECTORY_OPTION
+             WORKING_DIRECTORY ${RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY})
+
+    endif (RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY)
+
+    add_custom_command (OUTPUT ${STAMPFILE}
+                        COMMAND ${COMMAND}
+                        COMMAND ${CMAKE_COMMAND} -E touch ${STAMPFILE}
+                        DEPENDS ${SOURCE}
+                        ${WORKING_DIRECTORY_OPTION}
+                        COMMENT ${COMMENT})
+
+    # Add the stampfile both to the SOURCES of TARGET
+    # but also to the OBJECT_DEPENDS of any source files.
+    #
+    # On older CMake verisons editing SOURCES post-facto for a linkable
+    # target was a no-op.
+    set_property (TARGET ${TARGET}
+                  APPEND PROPERTY SOURCES ${STAMPFILE})
+    set_property (SOURCE ${SOURCE}
+                  APPEND PROPERTY OBJECT_DEPENDS ${STAMPFILE})
+
+endfunction (psq_run_tool_on_source)
+
+function (psq_run_tool_for_each_source TARGET TOOL_NAME)
+
+    set (RUN_COMMAND_OPTION_ARGS CHECK_GENERATED)
+    set (RUN_COMMAND_SINGLEVAR_ARGS WORKING_DIRECTORY)
+    set (RUN_COMMAND_MULTIVAR_ARGS COMMAND)
+    cmake_parse_arguments (RUN_COMMAND
+                           "${RUN_COMMAND_OPTION_ARGS}"
+                           "${RUN_COMMAND_SINGLEVAR_ARGS}"
+                           "${RUN_COMMAND_MULTIVAR_ARGS}"
+                           ${ARGN})
+
+    psq_strip_add_custom_target_sources (FILTERED_SOURCES
+                                         ${TARGET})
+    psq_handle_check_generated_option (RUN_COMMAND FILTERED_SOURCES
+                                       SOURCES ${FILTERED_SOURCES})
+
+    psq_forward_options (RUN_COMMAND RUN_ON_SOURCE_FORWARD
+                         SINGLEVAR_ARGS WORKING_DIRECTORY
+                         MULTIVAR_ARGS COMMAND)
+
+    # For each source file, add a new custom command which runs our
+    # tool and generates a stampfile, depending on the generation of
+    # the source file.
+    foreach (SOURCE ${FILTERED_SOURCES})
+
+        psq_run_tool_on_source (${TARGET} ${SOURCE} ${TOOL_NAME}
+                                ${RUN_ON_SOURCE_FORWARD})
+
+    endforeach ()
+
+endfunction (psq_run_tool_for_each_source)
+
 function (psq_make_compilation_db TARGET
                                   CUSTOM_COMPILATION_DB_DIR_RETURN)
 
