@@ -68,6 +68,8 @@ add_cmake_test (SpecialCompilationDBUseCXXLanguageOptForCPPHeader)
 
 add_cmake_build_test (RunToolOnSource
                       RunToolOnSourceVerify)
+add_cmake_build_test (RunToolOnSourceAfterDepends
+                      RunToolOnSourceAfterDependsVerify)
 add_cmake_build_test (RunToolOnSourceGeneratesStampfile
                       RunToolOnSourceGeneratesStampfileVerify)
 add_cmake_build_test (RunToolOnSourceGeneratesStampfileWithSpaces

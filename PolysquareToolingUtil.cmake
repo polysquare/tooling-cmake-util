@@ -383,7 +383,7 @@ endfunction (psq_get_target_command_attach_point)
 function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     set (RUN_TOOL_ON_SOURCE_SINGLEVAR_ARGS WORKING_DIRECTORY)
-    set (RUN_TOOL_ON_SOURCE_MULTIVAR_ARGS COMMAND)
+    set (RUN_TOOL_ON_SOURCE_MULTIVAR_ARGS COMMAND DEPENDS)
     cmake_parse_arguments (RUN_TOOL_ON_SOURCE
                            ""
                            "${RUN_TOOL_ON_SOURCE_SINGLEVAR_ARGS}"
@@ -406,10 +406,17 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     endif (RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY)
 
+    # Get all the sources on this target and make the new check depend on all
+    # of them. The reason why we depend on all of them instead of just the
+    # source that we are checking is that the source might include  a header
+    # file which is also generated. If the source includes that header file
+    # that header file doesn't exist, then the build will fail.
+    psq_strip_extraneous_sources (TARGET_SOURCES ${TARGET})
+
     add_custom_command (OUTPUT ${STAMPFILE}
                         COMMAND ${COMMAND}
                         COMMAND ${CMAKE_COMMAND} -E touch "${STAMPFILE}"
-                        DEPENDS ${SOURCE}
+                        DEPENDS ${TARGET_SOURCES} ${RUN_TOOL_ON_SOURCE_DEPENDS}
                         ${WORKING_DIRECTORY_OPTION}
                         COMMENT ${COMMENT}
                         VERBATIM)
@@ -430,7 +437,7 @@ function (psq_run_tool_for_each_source TARGET TOOL_NAME)
 
     set (RUN_COMMAND_OPTION_ARGS CHECK_GENERATED)
     set (RUN_COMMAND_SINGLEVAR_ARGS WORKING_DIRECTORY)
-    set (RUN_COMMAND_MULTIVAR_ARGS COMMAND)
+    set (RUN_COMMAND_MULTIVAR_ARGS COMMAND DEPENDS)
     cmake_parse_arguments (RUN_COMMAND
                            "${RUN_COMMAND_OPTION_ARGS}"
                            "${RUN_COMMAND_SINGLEVAR_ARGS}"
@@ -444,7 +451,7 @@ function (psq_run_tool_for_each_source TARGET TOOL_NAME)
 
     psq_forward_options (RUN_COMMAND RUN_ON_SOURCE_FORWARD
                          SINGLEVAR_ARGS WORKING_DIRECTORY
-                         MULTIVAR_ARGS COMMAND)
+                         MULTIVAR_ARGS COMMAND DEPENDS)
 
     # For each source file, add a new custom command which runs our
     # tool and generates a stampfile, depending on the generation of
