@@ -408,10 +408,11 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     add_custom_command (OUTPUT ${STAMPFILE}
                         COMMAND ${COMMAND}
-                        COMMAND ${CMAKE_COMMAND} -E touch ${STAMPFILE}
+                        COMMAND ${CMAKE_COMMAND} -E touch "${STAMPFILE}"
                         DEPENDS ${SOURCE}
                         ${WORKING_DIRECTORY_OPTION}
-                        COMMENT ${COMMENT})
+                        COMMENT ${COMMENT}
+                        VERBATIM)
 
     # Add the stampfile both to the SOURCES of TARGET
     # but also to the OBJECT_DEPENDS of any source files.
