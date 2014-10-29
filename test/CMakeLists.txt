@@ -70,6 +70,8 @@ add_cmake_build_test (RunToolOnSource
                       RunToolOnSourceVerify)
 add_cmake_build_test (RunToolOnSourceGeneratesStampfile
                       RunToolOnSourceGeneratesStampfileVerify)
+add_cmake_build_test (RunToolOnSourceGeneratesStampfileWithSpaces
+                      RunToolOnSourceGeneratesStampfileWithSpacesVerify)
 add_cmake_build_test (RunToolOnSourceNotRunAgainIfStampfileExists
                       RunToolOnSourceNotRunAgainIfStampfileExistsVerify)
 add_cmake_build_test (RunToolOnSources
