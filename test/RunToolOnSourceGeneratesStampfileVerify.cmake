@@ -6,4 +6,4 @@
 
 include (CMakeUnit)
 
-assert_file_exists (${CMAKE_CURRENT_BINARY_DIR}/Source.cpp.Tool.stamp)
+assert_file_exists ("${CMAKE_CURRENT_BINARY_DIR}/Source.cpp.Tool.stamp")

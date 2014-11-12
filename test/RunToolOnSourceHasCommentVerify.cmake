@@ -6,7 +6,7 @@
 
 include (CMakeUnit)
 
-set (BUILD_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/BUILD.output)
+set (BUILD_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/BUILD.output")
 
 assert_file_has_line_matching (${BUILD_OUTPUT}
                                "^.*Analyzing.*Source.cpp.* with Tool*$")

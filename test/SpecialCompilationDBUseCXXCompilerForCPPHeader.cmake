@@ -38,6 +38,11 @@ psq_make_compilation_db (${TARGET}
 
 set (COMPILE_COMMANDS
      ${COMPILATION_DB_DIR}/compile_commands.json)
+
+# Replace + first since passing escapes all the way down the call
+# chain is not something that can be done with any stability
 string (REPLACE "+" "." ESCAPED_CXX_COMPILER "${CMAKE_CXX_COMPILER}")
+cmake_unit_escape_string ("${CMAKE_CXX_COMPILER}" ESCAPED_CXX_COMPILER)
+
 assert_file_has_line_matching (${COMPILE_COMMANDS}
                                "^.*${ESCAPED_CXX_COMPILER}.*Header.h.*$")

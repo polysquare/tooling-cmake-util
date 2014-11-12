@@ -7,9 +7,12 @@
 
 include (CMakeUnit)
 
-set (BUILD_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/BUILD.output)
+set (BUILD_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/BUILD.output")
 
+cmake_unit_escape_string (ESCAPED_CMAKE_COMMAND "${CMAKE_COMMAND}")
+set (TOOL_COMMAND_REGEX
+     "^.*${ESCAPED_CMAKE_COMMAND} .*touch .*Source.cpp.ToolRun*$")
 assert_file_has_line_matching (${BUILD_OUTPUT}
-                               "^.*${CMAKE_COMMAND} -E echo .*Source.cpp.*$")
-assert_file_does_not_have_line_matching (${BUILD_OUTPUT}
-                                         "^.*-E echo .*Generated.cpp.*$")
+                               "${TOOL_COMMAND_REGEX}")
+assert_file_does_not_have_line_matching ("${BUILD_OUTPUT}"
+                                         "^.*touch .*Generated.cpp.ToolRun*$")

@@ -17,6 +17,10 @@ before_install:
 script:
   - mkdir -p test/build
   - pushd test/build
-  - cmake .. &&
-    ctest --output-on-failure &&
-    popd
+  - cmake ..  -DCMAKE_UNIT_LOG_COVERAGE=1
+  - ctest --output-on-failure &&
+  - popd
+after_success:
+  - cmake -DTRACEFILE=test/build/PolysquareCMakeHeaderLanguageTests.trace -DLCOV_OUTPUT=test/build/coverage.info -P cmake-unit/CMakeTraceToLCov.cmake
+  - coveralls-lcov test/build/coverage.info
+  - popd

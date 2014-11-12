@@ -36,7 +36,10 @@ psq_make_compilation_db (${TARGET}
                          INTERNAL_INCLUDE_DIRS
                          ${CMAKE_CURRENT_BINARY_DIR})
 
+cmake_unit_escape_string ("${CMAKE_C_COMPILER}"
+                          ESCAPED_C_COMPILER)
+
 set (COMPILE_COMMANDS
      ${COMPILATION_DB_DIR}/compile_commands.json)
 assert_file_has_line_matching (${COMPILE_COMMANDS}
-                               "^.*${CMAKE_C_COMPILER}.*Header.h.*$")
+                               "^.*${ESCAPED_C_COMPILER}.*Header.h.*$")

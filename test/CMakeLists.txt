@@ -74,8 +74,6 @@ add_cmake_build_test (RunToolOnSourceGeneratesStampfile
                       RunToolOnSourceGeneratesStampfileVerify)
 add_cmake_build_test (RunToolOnSourceGeneratesStampfileWithSpaces
                       RunToolOnSourceGeneratesStampfileWithSpacesVerify)
-add_cmake_build_test (RunToolOnSourceNotRunAgainIfStampfileExists
-                      RunToolOnSourceNotRunAgainIfStampfileExistsVerify)
 add_cmake_build_test (RunToolOnSources
                       RunToolOnSourcesVerify)
 add_cmake_build_test (RunToolOnSourcesFilterGenerated
@@ -83,7 +81,16 @@ add_cmake_build_test (RunToolOnSourcesFilterGenerated
 add_cmake_build_test (RunToolOnSourcesCheckGenerated
                       RunToolOnSourcesCheckGeneratedVerify)
 
+if (NOT CMAKE_GENERATOR MATCHES "^Visual Studio.*$")
+
+    add_cmake_build_test (RunToolOnSourceNotRunAgainIfStampfileExists
+                          RunToolOnSourceNotRunAgainIfStampfileExistsVerify)
+
+endif ()
+
 if (NOT CMAKE_GENERATOR STREQUAL "Ninja")
+
     add_cmake_build_test (RunToolOnSourceHasComment
                           RunToolOnSourceHasCommentVerify)
-endif (NOT CMAKE_GENERATOR STREQUAL "Ninja")
+
+endif ()
