@@ -8,11 +8,7 @@
 include (PolysquareToolingUtil)
 include (CMakeUnit)
 
-set (SOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/Source.cpp)
-file (WRITE ${SOURCE_FILE} "")
-
-add_executable (executable ${SOURCE_FILE})
-
+cmake_unit_create_simple_executable (executable)
 psq_get_target_command_attach_point (executable WHEN)
 
 assert_variable_is (WHEN STRING EQUAL "PRE_LINK")

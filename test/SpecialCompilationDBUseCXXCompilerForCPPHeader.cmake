@@ -8,42 +8,41 @@
 include (PolysquareToolingUtil)
 include (CMakeUnit)
 
-set (HEADER_FILE ${CMAKE_CURRENT_BINARY_DIR}/Header.h)
-set (CPP_SOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/Source.cpp)
-set (HEADER_FILE_CONTENTS
-     "#ifndef HEADER_H\n"
-     "#define HEADER_H\n"
-     "extern const int i\;\n"
-     "#endif")
-set (CPP_SOURCE_FILE_CONTENTS
-     "#include <Header.h>\n"
-     "const int i = 1\;\n"
-     "int main (void)\n"
-     "{\n"
-     "    return 0\;\n"
-     "}\n")
+set (HEADER_FILE_NAME "Header.h")
+set (HEADER_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${HEADER_FILE_NAME}")
+set (CXX_SOURCE_FILE "Source.cpp")
+set (CXX_SOURCE_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${CXX_SOURCE_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${CXX_SOURCE_FILE_NAME}"
+                                            FUNCTIONS main)
 set (TARGET target)
-
-file (WRITE ${HEADER_FILE} ${HEADER_FILE_CONTENTS})
-file (WRITE ${CPP_SOURCE_FILE} ${CPP_SOURCE_FILE_CONTENTS})
 
 add_custom_target (${TARGET} ALL
                    SOURCES
-                   ${CPP_SOURCE_FILE}
-                   ${HEADER_FILE})
+                   "${CXX_SOURCE_FILE_PATH}"
+                   "${HEADER_FILE_PATH}")
 psq_make_compilation_db (${TARGET}
                          COMPILATION_DB_DIR
-                         CXX_SOURCES ${CPP_SOURCE_FILE} ${HEADER_FILE}
+                         CXX_SOURCES
+                         "${CXX_SOURCE_FILE_PATH}"
+                         "${HEADER_FILE_PATH}"
                          INTERNAL_INCLUDE_DIRS
-                         ${CMAKE_CURRENT_BINARY_DIR})
+                         "${CMAKE_CURRENT_SOURCE_DIR}")
+
+cmake_unit_escape_string ("${CMAKE_CXX_COMPILER}"
+                          ESCAPED_CXX_COMPILER)
 
 set (COMPILE_COMMANDS
-     ${COMPILATION_DB_DIR}/compile_commands.json)
+     "${COMPILATION_DB_DIR}/compile_commands.json")
 
 # Replace + first since passing escapes all the way down the call
 # chain is not something that can be done with any stability
+cmake_unit_escape_string ("${CMAKE_CXX_COMPILER}"
+                          ESCAPED_CXX_COMPILER)
 string (REPLACE "+" "." ESCAPED_CXX_COMPILER "${CMAKE_CXX_COMPILER}")
-cmake_unit_escape_string ("${CMAKE_CXX_COMPILER}" ESCAPED_CXX_COMPILER)
-
-assert_file_has_line_matching (${COMPILE_COMMANDS}
+assert_file_has_line_matching ("${COMPILE_COMMANDS}"
                                "^.*${ESCAPED_CXX_COMPILER}.*Header.h.*$")

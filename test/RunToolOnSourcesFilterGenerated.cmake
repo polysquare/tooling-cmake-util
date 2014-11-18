@@ -9,15 +9,21 @@
 include (CMakeUnit)
 include (PolysquareToolingUtil)
 
-set (SOURCE_FILE "${CMAKE_CURRENT_BINARY_DIR}/Source.cpp")
-file (WRITE "${SOURCE_FILE}" "")
+set (SOURCE_FILE_NAME "Source.cpp")
+set (SOURCE_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${SOURCE_FILE_NAME}")
 
-set (GENERATED_SOURCE_FILE "${CMAKE_CURRENT_BINARY_DIR}/Generated.cpp")
-add_custom_command (OUTPUT "${GENERATED_SOURCE_FILE}"
-                    COMMAND
-                    "${CMAKE_COMMAND}" -E touch "${GENERATED_SOURCE_FILE}")
+set (GENERATED_SOURCE_FILE_NAME "Generated.cpp")
+set (GENERATED_SOURCE_FILE_PATH
+     "${CMAKE_CURRENT_BINARY_DIR}/${GENERATED_SOURCE_FILE_NAME}")
+cmake_unit_generate_source_file_during_build (TARGET NAME
+                                              "${GENERATED_SOURCE_FILE_NAME}")
 
-add_custom_target (target ALL SOURCES ${SOURCE_FILE} ${GENERATED_SOURCE_FILE})
+add_custom_target (target ALL SOURCES
+                   "${SOURCE_FILE_PATH}"
+                   "${GENERATED_SOURCE_FILE_PATH}")
 psq_run_tool_for_each_source (target "Tool"
                               COMMAND
                               "${CMAKE_COMMAND}" -E touch "@SOURCE@.ToolRun")

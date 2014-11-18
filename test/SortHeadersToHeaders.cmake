@@ -7,29 +7,45 @@
 include (PolysquareToolingUtil)
 include (CMakeUnit)
 
-set (C_HEADER_FILE ${CMAKE_CURRENT_BINARY_DIR}/CHeader.h)
-file (WRITE ${C_HEADER_FILE} "")
+set (C_HEADER_FILE_NAME "CHeader.h")
+set (C_HEADER_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${C_HEADER_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${C_HEADER_FILE_NAME}")
 
-set (CXX_HEADER_FILE ${CMAKE_CURRENT_BINARY_DIR}/CXXHeader.h)
-file (WRITE ${CXX_HEADER_FILE} "")
+set (CXX_HEADER_FILE_NAME "CXXHeader.h")
+set (CXX_HEADER_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${CXX_HEADER_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${CXX_HEADER_FILE_NAME}")
 
-set (CXX_SOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/Source.cpp)
-set (CXX_SOURCE_FILE_CONTENTS
-     "#include <CXXHeader.h>\n")
-file (WRITE ${CXX_SOURCE_FILE} ${CXX_SOURCE_FILE_CONTENTS})
+set (CXX_SOURCE_FILE_NAME "Source.cpp")
+set (CXX_SOURCE_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${CXX_SOURCE_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${CXX_SOURCE_FILE_NAME}"
+                                            INCLUDES
+                                            "${CXX_HEADER_FILE_PATH}"
+                                            INCLUDE_DIRECTORIES
+                                            "${CMAKE_CURRENT_SOURCE_DIR}")
 
-set (C_SOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/Source.c)
-set (C_SOURCE_FILE_CONTENTS
-     "#include <CHeader.h>\n")
-file (WRITE ${C_SOURCE_FILE} ${C_SOURCE_FILE_CONTENTS})
+set (C_SOURCE_FILE_NAME "Source.c")
+set (C_SOURCE_FILE_PATH
+     "${CMAKE_CURRENT_SOURCE_DIR}/${C_SOURCE_FILE_NAME}")
+cmake_unit_create_source_file_before_build (NAME
+                                            "${C_SOURCE_FILE_NAME}"
+                                            INCLUDES
+                                            "${C_HEADER_FILE_PATH}"
+                                            INCLUDE_DIRECTORIES
+                                            "${CMAKE_CURRENT_SOURCE_DIR}")
 
 psq_sort_sources_to_languages (C_SOURCES CXX_SOURCES HEADERS
                                SOURCES
-                               ${C_SOURCE_FILE}
-                               ${CXX_SOURCE_FILE}
-                               ${C_HEADER_FILE}
-                               ${CXX_HEADER_FILE}
-                               INCLUDES ${CMAKE_CURRENT_BINARY_DIR})
+                               "${C_SOURCE_FILE_PATH}"
+                               "${CXX_SOURCE_FILE_PATH}"
+                               "${C_HEADER_FILE_PATH}"
+                               "${CXX_HEADER_FILE_PATH}"
+                               INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}")
 
-assert_list_contains_value (HEADERS STRING EQUAL ${C_HEADER_FILE})
-assert_list_contains_value (HEADERS STRING EQUAL ${CXX_HEADER_FILE})
+assert_list_contains_value (HEADERS STRING EQUAL "${C_HEADER_FILE_PATH}")
+assert_list_contains_value (HEADERS STRING EQUAL "${CXX_HEADER_FILE_PATH}")
