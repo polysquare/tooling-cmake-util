@@ -7,21 +7,11 @@
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
+include (MakeSpecialCompilationDBHelper)
 
-set (SOURCE_FILE_NAME "Source.cpp")
-set (SOURCE_FILE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE_NAME}")
-cmake_unit_create_source_file_before_build (NAME
-                                            "${SOURCE_FILE_NAME}"
-                                            FUNCTIONS main)
-set (SOURCE_DEFINES custom_define=1)
-set (TARGET target)
-
-add_custom_target (${TARGET} ALL
-                   SOURCES "${SOURCE_FILE_PATH}")
-psq_make_compilation_db (${TARGET}
-                         COMPILATION_DB_DIR
-                         CXX_SOURCES "${SOURCE_FILE_PATH}"
-                         DEFINES ${SOURCE_DEFINES})
+test_make_sources_and_compilation_db ("Source.cpp" CXX
+                                      DEFINES
+                                      custom_define=1)
 
 set (COMPILE_COMMANDS
      "${COMPILATION_DB_DIR}/compile_commands.json")

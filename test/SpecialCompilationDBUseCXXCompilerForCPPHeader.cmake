@@ -7,34 +7,9 @@
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
+include (MakeSpecialCompilationDBHelper)
 
-set (HEADER_FILE_NAME "Header.h")
-set (HEADER_FILE_PATH
-     "${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_FILE_NAME}")
-cmake_unit_create_source_file_before_build (NAME
-                                            "${HEADER_FILE_NAME}")
-set (CXX_SOURCE_FILE "Source.cpp")
-set (CXX_SOURCE_FILE_PATH
-     "${CMAKE_CURRENT_SOURCE_DIR}/${CXX_SOURCE_FILE_NAME}")
-cmake_unit_create_source_file_before_build (NAME
-                                            "${CXX_SOURCE_FILE_NAME}"
-                                            FUNCTIONS main)
-set (TARGET target)
-
-add_custom_target (${TARGET} ALL
-                   SOURCES
-                   "${CXX_SOURCE_FILE_PATH}"
-                   "${HEADER_FILE_PATH}")
-psq_make_compilation_db (${TARGET}
-                         COMPILATION_DB_DIR
-                         CXX_SOURCES
-                         "${CXX_SOURCE_FILE_PATH}"
-                         "${HEADER_FILE_PATH}"
-                         INTERNAL_INCLUDE_DIRS
-                         "${CMAKE_CURRENT_SOURCE_DIR}")
-
-cmake_unit_escape_string ("${CMAKE_CXX_COMPILER}"
-                          ESCAPED_CXX_COMPILER)
+test_make_sources_and_compilation_db ("Source.cpp" CXX)
 
 set (COMPILE_COMMANDS
      "${COMPILATION_DB_DIR}/compile_commands.json")

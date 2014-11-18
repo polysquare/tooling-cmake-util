@@ -8,34 +8,12 @@
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
-
-set (HEADER_FILE_NAME "Header.h")
-set (HEADER_FILE_PATH
-     "${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_FILE_NAME}")
-cmake_unit_create_source_file_before_build (NAME
-                                            "${HEADER_FILE_NAME}")
-set (C_SOURCE_FILE "Source.c")
-set (C_SOURCE_FILE_PATH
-     "${CMAKE_CURRENT_SOURCE_DIR}/${C_SOURCE_FILE_NAME}")
-cmake_unit_create_source_file_before_build (NAME
-                                            "${C_SOURCE_FILE_NAME}"
-                                            FUNCTIONS main)
-set (TARGET target)
+include (MakeSpecialCompilationDBHelper)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSING_CXX_DEFINE")
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSING_C_DEFINE")
 
-add_custom_target (${TARGET} ALL
-                   SOURCES
-                   "${C_SOURCE_FILE_PATH}"
-                   "${HEADER_FILE_PATH}")
-psq_make_compilation_db (${TARGET}
-                         COMPILATION_DB_DIR
-                         C_SOURCES
-                         "${C_SOURCE_FILE_PATH}"
-                         "${HEADER_FILE_PATH}"
-                         INTERNAL_INCLUDE_DIRS
-                         "${CMAKE_CURRENT_SOURCE_DIR}")
+test_make_sources_and_compilation_db ("Source.c" C)
 
 set (COMPILE_COMMANDS
      "${COMPILATION_DB_DIR}/compile_commands.json")
