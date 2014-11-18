@@ -2,7 +2,7 @@
 #
 # Utility functions polysquare tooling cmake macros.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (CMakeParseArguments)
 
@@ -25,7 +25,7 @@ function (psq_append_to_global_property_unique PROPERTY ITEM)
             set (LIST_CONTAINS_ITEM TRUE)
             break ()
 
-        endif (LIST_ITEM STREQUAL ${ITEM})
+        endif ()
 
     endforeach ()
 
@@ -36,9 +36,9 @@ function (psq_append_to_global_property_unique PROPERTY ITEM)
                       PROPERTY ${PROPERTY}
                       ${ITEM})
 
-    endif (NOT LIST_CONTAINS_ITEM)
+    endif ()
 
-endfunction (psq_append_to_global_property_unique)
+endfunction ()
 
 function (psq_append_to_global_property PROPERTY)
 
@@ -57,7 +57,7 @@ function (psq_append_to_global_property PROPERTY)
 
     endforeach ()
 
-endfunction (psq_append_to_global_property)
+endfunction ()
 
 function (psq_get_list_intersection DESTINATION)
 
@@ -76,7 +76,7 @@ function (psq_get_list_intersection DESTINATION)
 
             list (APPEND _DESTINATION ${SOURCE_ITEM})
 
-        endif (NOT SOURCE_INDEX EQUAL -1)
+        endif ()
 
     endforeach ()
 
@@ -86,7 +86,7 @@ function (psq_get_list_intersection DESTINATION)
          ${_DESTINATION}
          PARENT_SCOPE)
 
-endfunction (psq_get_list_intersection)
+endfunction ()
 
 function (psq_append_each_to_options_with_prefix MAIN_LIST PREFIX)
 
@@ -104,7 +104,7 @@ function (psq_append_each_to_options_with_prefix MAIN_LIST PREFIX)
 
     set (${MAIN_LIST} ${${MAIN_LIST}} PARENT_SCOPE)
 
-endfunction (psq_append_each_to_options_with_prefix)
+endfunction ()
 
 function (psq_add_switch ALL_OPTIONS OPTION_NAME)
 
@@ -119,15 +119,15 @@ function (psq_add_switch ALL_OPTIONS OPTION_NAME)
 
         list (APPEND ${ALL_OPTIONS} ${ADD_SWITCH_ON})
 
-    else (DEFINED ${OPTION_NAME})
+    else ()
 
         list (APPEND ${ALL_OPTIONS} ${ADD_SWITCH_OFF})
 
-    endif (${OPTION_NAME})
+    endif ()
 
     set (${ALL_OPTIONS} ${${ALL_OPTIONS}} PARENT_SCOPE)
 
-endfunction (psq_add_switch)
+endfunction ()
 
 function (psq_assert_set VARIABLE)
 
@@ -136,9 +136,9 @@ function (psq_assert_set VARIABLE)
         string (REPLACE ";" "" MSG "${ARGN}")
         message (FATAL_ERROR "${MSG}")
 
-    endif (NOT ${VARIABLE})
+    endif ()
 
-endfunction (psq_assert_set)
+endfunction ()
 
 function (psq_forward_options PREFIX RETURN_LIST_NAME)
 
@@ -168,7 +168,7 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
 
              list (APPEND RETURN_LIST ${OPTION_ARG})
 
-        endif (${PREFIXED_OPTION_ARG})
+        endif ()
 
     endforeach ()
 
@@ -183,7 +183,7 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
             list (APPEND RETURN_LIST ${SINGLEVAR_ARG})
             list (APPEND RETURN_LIST ${${PREFIXED_SINGLEVAR_ARG}})
 
-        endif (${PREFIXED_SINGLEVAR_ARG})
+        endif ()
 
     endforeach ()
 
@@ -204,7 +204,7 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
 
     set (${RETURN_LIST_NAME} ${RETURN_LIST} PARENT_SCOPE)
 
-endfunction (psq_forward_options)
+endfunction ()
 
 function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
@@ -239,7 +239,7 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
             polysquare_scan_source_for_headers (SOURCE ${SOURCE}
                                                 ${DETERMINE_LANG_OPTIONS})
 
-        endif (NOT SOURCE_WAS_HEADER)
+        endif ()
 
         list (FIND LANGUAGE "C" C_INDEX)
         list (FIND LANGUAGE "CXX" CXX_INDEX)
@@ -248,19 +248,19 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
             list (APPEND _C_SOURCES ${SOURCE})
 
-        endif (NOT C_INDEX EQUAL -1)
+        endif ()
 
         if (NOT CXX_INDEX EQUAL -1)
 
             list (APPEND _CXX_SOURCES ${SOURCE})
 
-        endif (NOT CXX_INDEX EQUAL -1)
+        endif ()
 
         if (SOURCE_WAS_HEADER)
 
             list (APPEND _HEADERS ${SOURCE})
 
-        endif (SOURCE_WAS_HEADER)
+        endif ()
 
     endforeach ()
 
@@ -268,7 +268,7 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
     set (${CXX_SOURCES} ${_CXX_SOURCES} PARENT_SCOPE)
     set (${HEADERS} ${_HEADERS} PARENT_SCOPE)
 
-endfunction (psq_sort_sources_to_languages)
+endfunction ()
 
 function (psq_filter_out_generated_sources RESULT_VARIABLE)
 
@@ -293,13 +293,13 @@ function (psq_filter_out_generated_sources RESULT_VARIABLE)
 
             list (APPEND FILTERED_SOURCES ${SOURCE})
 
-        endif (NOT SOURCE_IS_GENERATED)
+        endif ()
 
     endforeach ()
 
     set (${RESULT_VARIABLE} ${FILTERED_SOURCES} PARENT_SCOPE)
 
-endfunction (psq_filter_out_generated_sources)
+endfunction ()
 
 function (psq_handle_check_generated_option PREFIX SOURCES_RETURN)
 
@@ -317,17 +317,17 @@ function (psq_handle_check_generated_option PREFIX SOURCES_RETURN)
 
     # Second case: We only want to check real sources,
     # so filter out generated ones.
-    else (${PREFIX}_CHECK_GENERATED)
+    else ()
 
         psq_filter_out_generated_sources (_FILTERED_SOURCES
                                           SOURCES
                                           ${HANDLE_CHECK_GENERATED_SOURCES})
 
-    endif (${PREFIX}_CHECK_GENERATED)
+    endif ()
 
     set (${SOURCES_RETURN} ${_FILTERED_SOURCES} PARENT_SCOPE)
 
-endfunction (psq_handle_check_generated_option)
+endfunction ()
 
 # psq_strip_extraneous_source
 #
@@ -352,13 +352,13 @@ function (psq_strip_extraneous_sources RETURN_SOURCES TARGET)
 
             list (APPEND STRIPPED_SOURCES ${SOURCE})
 
-        endif (NOT SOURCE_TYPE STREQUAL "UNKNOWN")
+        endif ()
 
     endforeach ()
 
     set (${RETURN_SOURCES} ${STRIPPED_SOURCES} PARENT_SCOPE)
 
-endfunction (psq_strip_extraneous_sources)
+endfunction ()
 
 function (psq_get_target_command_attach_point TARGET ATTACH_POINT_RETURN)
 
@@ -374,11 +374,11 @@ function (psq_get_target_command_attach_point TARGET ATTACH_POINT_RETURN)
 
         set (_ATTACH_POINT PRE_BUILD)
 
-    endif (TARGET_TYPE STREQUAL "UTILITY")
+    endif ()
 
     set (${ATTACH_POINT_RETURN} ${_ATTACH_POINT} PARENT_SCOPE)
 
-endfunction (psq_get_target_command_attach_point)
+endfunction ()
 
 function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
@@ -404,7 +404,7 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
         set (WORKING_DIRECTORY_OPTION
              WORKING_DIRECTORY ${RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY})
 
-    endif (RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY)
+    endif ()
 
     # Get all the sources on this target and make the new check depend on all
     # of them. The reason why we depend on all of them instead of just the
@@ -431,7 +431,7 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
     set_property (SOURCE ${SOURCE}
                   APPEND PROPERTY OBJECT_DEPENDS ${STAMPFILE})
 
-endfunction (psq_run_tool_on_source)
+endfunction ()
 
 function (psq_run_tool_for_each_source TARGET TOOL_NAME)
 
@@ -463,32 +463,32 @@ function (psq_run_tool_for_each_source TARGET TOOL_NAME)
 
     endforeach ()
 
-endfunction (psq_run_tool_for_each_source)
+endfunction ()
 
 function (psq_make_compilation_db TARGET
                                   CUSTOM_COMPILATION_DB_DIR_RETURN)
 
-    set (MAKE_COMP_DB_OPTIONS)
-    set (MAKE_COMP_DB_SINGLEVAR_OPTIONS)
-    set (MAKE_COMP_DB_MULTIVAR_OPTIONS
+    set (COMPDB_OPTIONS)
+    set (COMPDB_SINGLEVAR_OPTIONS)
+    set (COMPDB_MULTIVAR_OPTIONS
          C_SOURCES
          CXX_SOURCES
          INTERNAL_INCLUDE_DIRS
          EXTERNAL_INCLUDE_DIRS
          DEFINES)
 
-    cmake_parse_arguments (MAKE_COMP_DB
-                           "${MAKE_COMP_DB_OPTIONS}"
-                           "${MAKE_COMP_DB_SINGLEVAR_OPTIONS}"
-                           "${MAKE_COMP_DB_MULTIVAR_OPTIONS}"
+    cmake_parse_arguments (COMPDB
+                           "${COMPDB_OPTIONS}"
+                           "${COMPDB_SINGLEVAR_OPTIONS}"
+                           "${COMPDB_MULTIVAR_OPTIONS}"
                            ${ARGN})
 
     # Don't write anything if we don't have to
-    if (NOT MAKE_COMP_DB_C_SOURCES AND NOT MAKE_COMP_DB_CXX_SOURCES)
+    if (NOT COMPDB_C_SOURCES AND NOT COMPDB_CXX_SOURCES)
 
         return ()
 
-    endif (NOT MAKE_COMP_DB_C_SOURCES AND NOT MAKE_COMP_DB_CXX_SOURCES)
+    endif ()
 
     set (CUSTOM_COMPILATION_DB_DIR
          ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_compile_commands/)
@@ -498,13 +498,13 @@ function (psq_make_compilation_db TARGET
     set (COMPILATION_DB_FILE_CONTENTS
          "[")
 
-    foreach (C_SOURCE ${MAKE_COMP_DB_C_SOURCES})
+    foreach (C_SOURCE ${COMPDB_C_SOURCES})
 
         list (APPEND SOURCES_LANGUAGES "C,${C_SOURCE}")
 
     endforeach ()
 
-    foreach (CXX_SOURCE ${MAKE_COMP_DB_CXX_SOURCES})
+    foreach (CXX_SOURCE ${COMPDB_CXX_SOURCES})
 
         list (APPEND SOURCES_LANGUAGES "CXX,${CXX_SOURCE}")
 
@@ -538,7 +538,7 @@ function (psq_make_compilation_db TARGET
             list (APPEND COMPILER_COMMAND_LINE
                   ${CMAKE_C_COMPILER})
 
-        endif (LANGUAGE STREQUAL "CXX")
+        endif ()
 
         # Fake output file etc.
         list (APPEND COMPILER_COMMAND_LINE
@@ -550,15 +550,17 @@ function (psq_make_compilation_db TARGET
         # All includes
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
                                                 -isystem
-                                                LIST ${MAKE_COMP_DB_EXTERNAL_INCLUDE_DIRS})
+                                                LIST
+                                                ${COMPDB_EXTERNAL_INCLUDE_DIRS})
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
                                                 -I
-                                                LIST ${MAKE_COMP_DB_INTERNAL_INCLUDE_DIRS})
+                                                LIST
+                                                ${COMPDB_INTERNAL_INCLUDE_DIRS})
 
         # All defines
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
                                                 -D
-                                                LIST ${MAKE_COMP_DB_DEFINES})
+                                                LIST ${COMPDB_DEFINES})
 
 
         # CXXFLAGS / CFLAGS
@@ -572,7 +574,7 @@ function (psq_make_compilation_db TARGET
             list (APPEND COMPILER_COMMAND_LINE
                   ${CMAKE_C_FLAGS})
 
-        endif (LANGUAGE STREQUAL "CXX")
+        endif ()
 
         string (REPLACE ";" " "
                 COMPILER_COMMAND_LINE "${COMPILER_COMMAND_LINE}")
@@ -612,4 +614,4 @@ function (psq_make_compilation_db TARGET
     set (${CUSTOM_COMPILATION_DB_DIR_RETURN}
          ${CUSTOM_COMPILATION_DB_DIR} PARENT_SCOPE)
 
-endfunction (psq_make_compilation_db)
+endfunction ()

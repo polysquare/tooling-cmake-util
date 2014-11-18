@@ -1,4 +1,5 @@
-# /tests/CMakeLists.txt
+# /test/CMakeLists.txt
+#
 # Main entry point for the tooling-cmake-util tests.
 #
 # See LICENCE.md for Copyright information
@@ -7,7 +8,7 @@ if (POLICY CMP0025)
 
     cmake_policy (SET CMP0025 NEW)
 
-endif (POLICY CMP0025)
+endif ()
 
 project (PolysquareToolingUtilTests)
 cmake_minimum_required (VERSION 2.8)

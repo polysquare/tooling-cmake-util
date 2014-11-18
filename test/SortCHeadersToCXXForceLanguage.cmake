@@ -1,9 +1,9 @@
-# /tests/SortCHeadersToCXXForceLanguage.cmake
+# /test/SortCHeadersToCXXForceLanguage.cmake
 #
 # Checks that C headers are put in CXX_SOURCES when calling
 # psq_sort_sources_to_languages with FORCE_LANGUAGE CXX
 #
-# Check LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

@@ -1,4 +1,5 @@
-# /tests/RunToolOnSourceNotRunAgainIfStampfileExistsVerify.cmake
+# /test/RunToolOnSourceNotRunAgainIfStampfileExistsVerify.cmake
+#
 # Verifies that when we ran our tool on our source file, that
 # ${CMAKE_COMMAND} -E touch "${SOURCE_FILE}.ToolRun" was not run
 # (eg .*Source.cpp.ToolRun$) because we already have a stampfile

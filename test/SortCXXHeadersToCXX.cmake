@@ -1,9 +1,9 @@
-# /tests/SortCXXHeadersToCXX.cmake
+# /test/SortCXXHeadersToCXX.cmake
 #
 # Checks that CXX headers are put in CXX_SOURCES when calling
 # psq_sort_sources_to_languages
 #
-# Check LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

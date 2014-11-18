@@ -1,9 +1,9 @@
-# /tests/GetTargetAttachPointForLibraryPreLink.cmake
+# /test/GetTargetAttachPointForLibraryPreLink.cmake
 #
 # Adds a library and calls psq_get_target_command_attach_point
 # on it. The result should be PRE_BUILD as opposed to PRE_LINK.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

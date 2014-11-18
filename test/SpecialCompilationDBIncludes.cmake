@@ -1,4 +1,5 @@
-# /tests/SpecialCompilationDBIncludes.cmake
+# /test/SpecialCompilationDBIncludes.cmake
+#
 # Add some sources and includes to a custom target.
 # The includes should be passed into the compilation DB.
 #

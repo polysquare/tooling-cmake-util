@@ -1,10 +1,10 @@
-# /tests/HandleCheckGeneratedOptionFilter.cmake
+# /test/HandleCheckGeneratedOptionFilter.cmake
 #
 # Tests that we can filter out generated sources added with
 # add_custom_command if CHECK_GENERATED was not passed to
 # psq_handle_check_generated_option
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
@@ -26,7 +26,7 @@ function (add_tooling)
     assert_list_does_not_contain_value (FILTERED_SOURCES
                                         STRING EQUAL ${GENERATED_FILE})
 
-endfunction (add_tooling)
+endfunction ()
 
 # Call without CHECK_GENERATED
 add_tooling ()

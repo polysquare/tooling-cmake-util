@@ -1,4 +1,5 @@
-# /tests/RunToolOnSourceHasComemntVerify.cmake
+# /test/RunToolOnSourceHasCommentVerify.cmake
+#
 # Verifies that when we ran our tool on our source file, that
 # a string "Analyzing ${SOURCE_FILE} with Tool" was printed
 #

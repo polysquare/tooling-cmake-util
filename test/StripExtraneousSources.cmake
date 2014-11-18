@@ -1,10 +1,10 @@
-# /tests/StripExtraneousSources.cmake
+# /test/StripExtraneousSources.cmake
 #
 # Adds a custom target with some SOURCES and call
 # psq_strip_add_custom_target_sources on it. The returned list should
 # only contain the passed sources and nothing else (like the target name).
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

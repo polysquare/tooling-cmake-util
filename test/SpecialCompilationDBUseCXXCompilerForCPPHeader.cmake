@@ -1,4 +1,5 @@
-# /tests/SpecialCompilationDBUseCXXCompilerForCPPHeader.cmake
+# /test/SpecialCompilationDBUseCXXCompilerForCPPHeader.cmake
+#
 # Add some sources and defines to a custom target
 # One of them is a C++ header.
 #

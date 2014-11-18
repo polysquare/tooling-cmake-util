@@ -1,4 +1,5 @@
-# /tests/RunToolOnSourceAfterDependsVerify.cmake
+# /test/RunToolOnSourceAfterDependsVerify.cmake
+#
 # Verifies that our "custom_dependency" target got built. If it wasn't built
 # then it was never run.
 #

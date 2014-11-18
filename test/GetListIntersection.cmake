@@ -3,7 +3,7 @@
 # Gets the intersection between lists A_LIST and B_LIST. Checks that only
 # items containsed in both are in DESTINATION_LIST
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

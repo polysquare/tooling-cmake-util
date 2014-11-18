@@ -1,11 +1,11 @@
-# /tests/ForwardSinglevarArgs.cmake
+# /test/ForwardSinglevarArgs.cmake
 #
 # Checks that some single-variable arguments passed in to a function with
 # an argument prefix PREFIX get re-added to the forward options list
 # as SINGLEVAR_ARGUMENT_NAME_PASSED;Argument1 etc and
 # SINGLEVAR_ARGUMENT_NAME_NOT_PASSED is not present in the forward options.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
@@ -31,6 +31,6 @@ function (called_function)
     assert_list_does_not_contain_value (FORWARD_OPTIONS STRING EQUAL
                                         SINGLEVAR_ARGUMENT_NAME_NOT_PASSED)
 
-endfunction (called_function)
+endfunction ()
 
 called_function (SINGLEVAR_ARGUMENT_NAME_PASSED ${PASSED_ARGUMENT})

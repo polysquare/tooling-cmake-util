@@ -1,4 +1,5 @@
-# /tests/SpecialCompilationDBUseCXXFlagsForCPPHeader.cmake
+# /test/SpecialCompilationDBUseCXXFlagsForCPPHeader.cmake
+#
 # Add some sources and defines to a custom target
 # One of them is a C++ header. The CMAKE_CXX_FLAGS
 # should be part of its compile commands.

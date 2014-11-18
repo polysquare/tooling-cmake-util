@@ -1,8 +1,8 @@
-# /tests/AppendEachToOptionsWithPrefix.cmake
+# /test/AppendEachToOptionsWithPrefix.cmake
 #
 # Checks that our list elements got added to the list with PREFIX before them.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

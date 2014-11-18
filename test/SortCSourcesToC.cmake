@@ -1,9 +1,9 @@
-# /tests/SortCSourcesToC.cmake
+# /test/SortCSourcesToC.cmake
 #
 # Checks that C sources are put in C_SOURCES when calling
 # psq_sort_sources_to_languages
 #
-# Check LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

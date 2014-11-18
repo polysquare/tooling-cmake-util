@@ -1,4 +1,5 @@
-# /tests/RunToolOnSourceVerify.cmake
+# /test/RunToolOnSourceVerify.cmake
+#
 # Verifies that when we ran our tool on our source file, that
 # ${CMAKE_COMMAND} -E touch "${SOURCE_FILE}.ToolRun" was run (eg .*Source.cpp.$)
 #

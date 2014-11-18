@@ -1,9 +1,9 @@
-# /tests/AppendEachToGlobalProperty.cmake
+# /test/AppendEachToGlobalProperty.cmake
 #
 # Checks that our list elements got added to the GLOBAL_PROPERTY
 # global property.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

@@ -1,4 +1,5 @@
-# /tests/SpecialCompilationDBDefines.cmake
+# /test/SpecialCompilationDBDefines.cmake
+#
 # Add some sources and defines to a custom target.
 # The defines should be passed into the compilation DB.
 #

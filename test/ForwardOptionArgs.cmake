@@ -1,10 +1,10 @@
-# /tests/ForwardOptionArgs.cmake
+# /test/ForwardOptionArgs.cmake
 #
 # Checks that option arguments passed to a function get put back into the
 # forward options list with their original name, but only if they were
 # set
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
@@ -26,6 +26,6 @@ function (called_function)
     assert_list_does_not_contain_value (FORWARD_OPTIONS STRING EQUAL
                                         NOT_PASSED)
 
-endfunction (called_function)
+endfunction ()
 
 called_function (PASSED)

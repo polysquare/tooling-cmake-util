@@ -1,9 +1,9 @@
-# /tests/FilterOutGeneratedSources.cmake
+# /test/FilterOutGeneratedSources.cmake
 #
 # Tests that we can filter out generated sources added with
 # add_custom_command.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

@@ -1,10 +1,10 @@
-# /tests/ForwardMultivarArgs.cmake
+# /test/ForwardMultivarArgs.cmake
 #
 # Checks that some multi-variable arguments passed in to a function with
 # an argument prefix PREFIX get re-added to the forward options list
 # as MUTLIVAR_ARGUMENT_NAME;Argument1;Argument2; etc.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)
@@ -28,6 +28,6 @@ function (called_function)
     assert_list_contains_value (FORWARD_OPTIONS STRING EQUAL
                                 ${PASSED_ARGUMENTS_TWO})
 
-endfunction (called_function)
+endfunction ()
 
 called_function (MULTIVAR_ARGUMENT_NAME ${PASSED_ARGUMENTS})

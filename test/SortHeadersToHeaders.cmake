@@ -1,8 +1,8 @@
-# /tests/SortHeadersToHeaders.cmake
+# /test/SortHeadersToHeaders.cmake
 #
 # Checks that all headers are put into HEADERS.
 #
-# Check LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

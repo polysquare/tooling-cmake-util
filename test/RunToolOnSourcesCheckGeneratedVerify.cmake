@@ -1,7 +1,9 @@
-# /tests/RunToolOnSourcesCheckGeneratedVerify.cmake
+# /test/RunToolOnSourcesCheckGeneratedVerify.cmake
+#
 # Verifies that when we ran our tool on our source file, that
 # ${CMAKE_COMMAND} -E touch "${SOURCE_FILE}.ToolRun" was run on
 # the generated source too.
+#
 # See LICENCE.md for Copyright information
 
 include (CMakeUnit)

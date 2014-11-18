@@ -1,8 +1,9 @@
 # /test/ExtraneousNonHeaderSourcesNotScanned.cmake
+#
 # Adds some source files, including a source file which is not
 # a compilable or header source at all. The configure step should succeed.
 #
-# See LICENCE.md for Copyright Information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

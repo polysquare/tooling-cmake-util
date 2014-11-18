@@ -1,8 +1,8 @@
-# /tests/AddSwitchOn.cmake
+# /test/AddSwitchOn.cmake
 #
 # Checks that our ON command line switch for a variable being true is added.
 #
-# See LICENCE.md for Copyright information.
+# See LICENCE.md for Copyright information
 
 include (PolysquareToolingUtil)
 include (CMakeUnit)

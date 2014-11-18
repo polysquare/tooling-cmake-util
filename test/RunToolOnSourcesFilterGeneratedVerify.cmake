@@ -1,4 +1,5 @@
-# /tests/RunToolOnSourcesFilterGeneratedVerify.cmake
+# /test/RunToolOnSourcesFilterGeneratedVerify.cmake
+#
 # Verifies that when we ran our tool on our source file, that
 # ${CMAKE_COMMAND} -E echo "${SOURCE_FILE}" was run only on the non-generated
 # source (eg .*Source.cpp.*$)
