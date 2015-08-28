@@ -524,6 +524,7 @@ function (psq_make_compilation_db TARGET
              "${COMPILATION_DB_FILE_CONTENTS}\n{\n"
              "\"directory\": \"${CMAKE_CURRENT_BINARY_DIR}\",\n"
              "\"command\": \"")
+        unset (COMPILER_COMMAND_LINE)
 
         # Compiler and language options
         if (LANGUAGE STREQUAL "CXX")
