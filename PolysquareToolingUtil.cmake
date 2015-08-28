@@ -2,13 +2,20 @@
 #
 # Utility functions polysquare tooling cmake macros.
 #
-# See LICENCE.md for Copyright information
+# See /LICENCE.md for Copyright information
 
+if (NOT BIICODE)
+
+    set (CMAKE_MODULE_PATH
+         "${CMAKE_SOURCE_DIR}/bii/deps"
+         "${CMAKE_MODULE_PATH}")
+
+endif ()
+
+include ("smspillaz/cmake-include-guard/IncludeGuard")
+cmake_include_guard (SET_MODULE_PATH)
+include ("smspillaz/cmake-header-language/DetermineHeaderLanguage")
 include (CMakeParseArguments)
-
-set (DETERMINE_HEADER_LANGUAGE_DIR
-     ${CMAKE_CURRENT_LIST_DIR}/determine-header-language/)
-include (${DETERMINE_HEADER_LANGUAGE_DIR}DetermineHeaderLanguage.cmake)
 
 function (psq_append_to_global_property_unique PROPERTY ITEM)
 
@@ -68,7 +75,9 @@ function (psq_get_list_intersection DESTINATION)
                            "${INTERSECT_MULTIVAR_ARGS}"
                            ${ARGN})
 
-    foreach (SOURCE_ITEM ${INTERSECT_SOURCE})
+    # We don't want correctness/quotes here, since INTERSECT_SOURCE is
+    # a list, not a file.
+    foreach (SOURCE_ITEM ${INTERSECT_SOURCE})  # NOLINT:correctness/quotes
 
         list (FIND INTERSECT_INTERSECTION ${SOURCE_ITEM} SOURCE_INDEX)
 
@@ -158,21 +167,21 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
     # Temporary accumulation of variables to forward
     set (RETURN_LIST)
 
-    # Option args - just forward the value of each set ${REFIX_OPTION_ARG}
-    # as this will be set to the option or to ""
+    # Option arguments - just forward the value of each set
+    # ${PREFIX_OPTION_ARG} as this will be set to the option or to ""
     foreach (OPTION_ARG ${FORWARD_OPTION_ARGS})
 
         set (PREFIXED_OPTION_ARG ${PREFIX}_${OPTION_ARG})
 
         if (${PREFIXED_OPTION_ARG})
 
-             list (APPEND RETURN_LIST ${OPTION_ARG})
+            list (APPEND RETURN_LIST ${OPTION_ARG})
 
         endif ()
 
     endforeach ()
 
-    # Single-variable args - add the name of the argument and its value to
+    # Single-variable arguments - add the name of the argument and its value to
     # the return list
     foreach (SINGLEVAR_ARG ${FORWARD_SINGLEVAR_ARGS})
 
@@ -187,7 +196,7 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
 
     endforeach ()
 
-    # Multi-variable args - add the name of the argument and all its values
+    # Multi-variable arguments - add the name of the argument and all its values
     # to the return-list
     foreach (MULTIVAR_ARG ${FORWARD_MULTIVAR_ARGS})
 
@@ -228,15 +237,15 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
         set (INCLUDES ${SORT_SOURCES_INCLUDES})
         set (CPP_IDENTIFIERS ${SORT_SOURCES_CPP_IDENTIFIERS})
-        polysquare_determine_language_for_source (${SOURCE}
-                                                  LANGUAGE
-                                                  SOURCE_WAS_HEADER
-                                                  ${DETERMINE_LANG_OPTIONS})
+        psq_determine_language_for_source ("${SOURCE}"
+                                           LANGUAGE
+                                           SOURCE_WAS_HEADER
+                                           ${DETERMINE_LANG_OPTIONS})
 
         # Scan this source for headers, we'll need them later
         if (NOT SOURCE_WAS_HEADER)
 
-            polysquare_scan_source_for_headers (SOURCE ${SOURCE}
+            psq_scan_source_for_headers (SOURCE "${SOURCE}"
                                                 ${DETERMINE_LANG_OPTIONS})
 
         endif ()
@@ -246,19 +255,19 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
         if (NOT C_INDEX EQUAL -1)
 
-            list (APPEND _C_SOURCES ${SOURCE})
+            list (APPEND _C_SOURCES "${SOURCE}")
 
         endif ()
 
         if (NOT CXX_INDEX EQUAL -1)
 
-            list (APPEND _CXX_SOURCES ${SOURCE})
+            list (APPEND _CXX_SOURCES "${SOURCE}")
 
         endif ()
 
         if (SOURCE_WAS_HEADER)
 
-            list (APPEND _HEADERS ${SOURCE})
+            list (APPEND _HEADERS "${SOURCE}")
 
         endif ()
 
@@ -286,12 +295,12 @@ function (psq_filter_out_generated_sources RESULT_VARIABLE)
     foreach (SOURCE ${FILTER_OUT_SOURCES})
 
         get_property (SOURCE_IS_GENERATED
-                      SOURCE ${SOURCE}
+                      SOURCE "${SOURCE}"
                       PROPERTY GENERATED)
 
         if (NOT SOURCE_IS_GENERATED)
 
-            list (APPEND FILTERED_SOURCES ${SOURCE})
+            list (APPEND FILTERED_SOURCES "${SOURCE}")
 
         endif ()
 
@@ -329,7 +338,7 @@ function (psq_handle_check_generated_option PREFIX SOURCES_RETURN)
 
 endfunction ()
 
-# psq_strip_extraneous_source
+# psq_strip_extraneous_sources
 #
 # Fetches the target's SOURCES property, but removes any non-linkable
 # and non-header sources from it, storing the result in RETURN_SOURCES.
@@ -345,12 +354,12 @@ function (psq_strip_extraneous_sources RETURN_SOURCES TARGET)
 
     foreach (SOURCE ${TARGET_SOURCES})
 
-        polysquare_source_type_from_source_file_extension (${SOURCE}
-                                                           SOURCE_TYPE)
+        psq_source_type_from_source_file_extension ("${SOURCE}"
+                                                    SOURCE_TYPE)
 
         if (NOT SOURCE_TYPE STREQUAL "UNKNOWN")
 
-            list (APPEND STRIPPED_SOURCES ${SOURCE})
+            list (APPEND STRIPPED_SOURCES "${SOURCE}")
 
         endif ()
 
@@ -390,19 +399,19 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
                            "${RUN_TOOL_ON_SOURCE_MULTIVAR_ARGS}"
                            ${ARGN})
 
-    # Replace @SOURCE@ with SOURCE in RUN_COMMAND_COMMAND here
+    # Replace @SOURCE@ with SOURCE in RUN_TOOL_ON_SOURCE_COMMAND here
     string (CONFIGURE "${RUN_TOOL_ON_SOURCE_COMMAND}" COMMAND @ONLY)
 
     # Get the basename of the file, used for the comment and stamp.
-    get_filename_component (SRCNAME ${SOURCE} NAME)
+    get_filename_component (SRCNAME "${SOURCE}" NAME)
     set (STAMPFILE
-         ${CMAKE_CURRENT_BINARY_DIR}/${SRCNAME}.${TOOL_NAME}.stamp)
+         "${CMAKE_CURRENT_BINARY_DIR}/${SRCNAME}.${TOOL_NAME}.stamp")
     set (COMMENT "Analyzing ${SRCNAME} with ${TOOL_NAME}")
 
     if (RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY)
 
         set (WORKING_DIRECTORY_OPTION
-             WORKING_DIRECTORY ${RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY})
+             WORKING_DIRECTORY "${RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY}")
 
     endif ()
 
@@ -415,7 +424,7 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     add_custom_command (OUTPUT ${STAMPFILE}
                         COMMAND ${COMMAND}
-                        COMMAND ${CMAKE_COMMAND} -E touch "${STAMPFILE}"
+                        COMMAND "${CMAKE_COMMAND}" -E touch "${STAMPFILE}"
                         DEPENDS ${TARGET_SOURCES} ${RUN_TOOL_ON_SOURCE_DEPENDS}
                         ${WORKING_DIRECTORY_OPTION}
                         COMMENT ${COMMENT}
@@ -424,11 +433,11 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
     # Add the stampfile both to the SOURCES of TARGET
     # but also to the OBJECT_DEPENDS of any source files.
     #
-    # On older CMake verisons editing SOURCES post-facto for a linkable
+    # On older CMake versions editing SOURCES post-facto for a linkable
     # target was a no-op.
     set_property (TARGET ${TARGET}
                   APPEND PROPERTY SOURCES ${STAMPFILE})
-    set_property (SOURCE ${SOURCE}
+    set_property (SOURCE "${SOURCE}"
                   APPEND PROPERTY OBJECT_DEPENDS ${STAMPFILE})
 
 endfunction ()
@@ -458,7 +467,7 @@ function (psq_run_tool_for_each_source TARGET TOOL_NAME)
     # the source file.
     foreach (SOURCE ${FILTERED_SOURCES})
 
-        psq_run_tool_on_source (${TARGET} ${SOURCE} ${TOOL_NAME}
+        psq_run_tool_on_source (${TARGET} "${SOURCE}" ${TOOL_NAME}
                                 ${RUN_ON_SOURCE_FORWARD})
 
     endforeach ()
@@ -491,9 +500,9 @@ function (psq_make_compilation_db TARGET
     endif ()
 
     set (CUSTOM_COMPILATION_DB_DIR
-         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_compile_commands/)
+         "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_compile_commands/")
     set (COMPILATION_DB_FILE
-         ${CUSTOM_COMPILATION_DB_DIR}/compile_commands.json)
+         "${CUSTOM_COMPILATION_DB_DIR}/compile_commands.json")
 
     set (COMPILATION_DB_FILE_CONTENTS
          "[")
@@ -517,8 +526,8 @@ function (psq_make_compilation_db TARGET
         list (GET SOURCE_LANGUAGE 0 LANGUAGE)
         list (GET SOURCE_LANGUAGE 1 SOURCE)
 
-        get_filename_component (FULL_PATH ${SOURCE} ABSOLUTE)
-        get_filename_component (BASENAME ${SOURCE} NAME)
+        get_filename_component (FULL_PATH "${SOURCE}" ABSOLUTE)
+        get_filename_component (BASENAME "${SOURCE}" NAME)
 
         set (COMPILATION_DB_FILE_CONTENTS
              "${COMPILATION_DB_FILE_CONTENTS}\n{\n"
@@ -529,10 +538,10 @@ function (psq_make_compilation_db TARGET
         # Compiler and language options
         if (LANGUAGE STREQUAL "CXX")
 
-             list (APPEND COMPILER_COMMAND_LINE
-                   ${CMAKE_CXX_COMPILER}
-                   -x
-                   c++)
+            list (APPEND COMPILER_COMMAND_LINE
+                  ${CMAKE_CXX_COMPILER}
+                  -x
+                  c++)
 
         elseif (LANGUAGE STREQUAL "C")
 
@@ -546,7 +555,7 @@ function (psq_make_compilation_db TARGET
               -o
               "CMakeFiles/${TARGET}.dir/${BASENAME}.o"
               -c
-              ${FULL_PATH})
+              "${FULL_PATH}")
 
         # All includes
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
@@ -601,7 +610,8 @@ function (psq_make_compilation_db TARGET
     math (EXPR TRIMMED_COMPILATION_DB_FILE_LENGTH
           "${COMPILATION_DB_FILE_LENGTH} - 1")
     string (SUBSTRING "${COMPILATION_DB_FILE_CONTENTS}"
-            0 ${TRIMMED_COMPILATION_DB_FILE_LENGTH}
+            0
+            ${TRIMMED_COMPILATION_DB_FILE_LENGTH}
             COMPILATION_DB_FILE_CONTENTS)
 
     # Final "]"
@@ -609,10 +619,11 @@ function (psq_make_compilation_db TARGET
          "${COMPILATION_DB_FILE_CONTENTS}\n]\n")
 
     # Write out
-    file (WRITE ${COMPILATION_DB_FILE}
+    file (WRITE "${COMPILATION_DB_FILE}"
           ${COMPILATION_DB_FILE_CONTENTS})
 
     set (${CUSTOM_COMPILATION_DB_DIR_RETURN}
-         ${CUSTOM_COMPILATION_DB_DIR} PARENT_SCOPE)
+         "${CUSTOM_COMPILATION_DB_DIR}"
+         PARENT_SCOPE)
 
 endfunction ()
