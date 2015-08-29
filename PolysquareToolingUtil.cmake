@@ -17,6 +17,13 @@ cmake_include_guard (SET_MODULE_PATH)
 include ("smspillaz/cmake-header-language/DetermineHeaderLanguage")
 include (CMakeParseArguments)
 
+# psq_append_to_global_property_unique
+#
+# Append ITEM to the global property PROPERTY, only if it is not
+# already part of the list.
+#
+# PROPERTY: Global property to append to.
+# ITEM: Item to append, only if not present.
 function (psq_append_to_global_property_unique PROPERTY ITEM)
 
     get_property (GLOBAL_PROPERTY
@@ -66,6 +73,14 @@ function (psq_append_to_global_property PROPERTY)
 
 endfunction ()
 
+# psq_get_list_intersection
+#
+# Get the logical intersection between two lists and store it in
+# `DESTINATION`.
+#
+# DESTINATION: Variable to store intersection in.
+# SOURCE: Source list.
+# INTERSECTION: List to intersect with.
 function (psq_get_list_intersection DESTINATION)
 
     set (INTERSECT_MULTIVAR_ARGS SOURCE INTERSECTION)
@@ -97,6 +112,12 @@ function (psq_get_list_intersection DESTINATION)
 
 endfunction ()
 
+# psq_append_each_to_options_with_prefix
+#
+# Append items in ARGN to MAIN_LIST, giving each PREFIX.
+#
+# MAIN_LIST: List to append to.
+# PREFIX: Prefix to append to each item.
 function (psq_append_each_to_options_with_prefix MAIN_LIST PREFIX)
 
     cmake_parse_arguments (APPEND
@@ -115,6 +136,15 @@ function (psq_append_each_to_options_with_prefix MAIN_LIST PREFIX)
 
 endfunction ()
 
+# psq_add_switch:
+#
+# Specify certain command line switches depending on value of
+# boolean variable.
+#
+# ALL_OPTIONS: Existing list of command line switches.
+# OPTION_NAME: Boolean variable to check.
+# [Optional] ON: Switch to add if boolean variable is true.
+# [Optional] OFF: Switch to add if boolean variable is false.
 function (psq_add_switch ALL_OPTIONS OPTION_NAME)
 
     set (ADD_SWITCH_SINGLEVAR_ARGS ON OFF)
@@ -215,6 +245,20 @@ function (psq_forward_options PREFIX RETURN_LIST_NAME)
 
 endfunction ()
 
+# psq_sort_sources_to_languages:
+#
+# Sort provided sources into their various languages and separate
+# header files from non-headers.
+#
+# C_SOURCES: Variable to store list of C sources in.
+# CXX_SOURCES: Variable to store list of C++ sources in.
+# HEADERS: Variable to store list of headers in.
+# SOURCES: List of source files to separate out.
+# [Optional] FORCE_LANGUAGE: Force language of all sources to be either C
+#                            or CXX.
+# [Optional] CPP_IDENTIFIERS: List of identifiers that indicate that a
+#                             source file is actually a C++ source file.
+# [Optional] INCLUDES: Include directories to search.
 function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
     set (SORT_SOURCES_SINGLEVAR_OPTIONS FORCE_LANGUAGE)
@@ -279,6 +323,13 @@ function (psq_sort_sources_to_languages C_SOURCES CXX_SOURCES HEADERS)
 
 endfunction ()
 
+# psq_filter_out_generated_sources
+#
+# Filter out generated sources from SOURCES and store the resulting
+# list of sources in `RESULT_VARIABLE`.
+#
+# RESULT_VARIABLE: Resultant list of sources, without generated sources.
+# SOURCES: List of source files, including generated sources.
 function (psq_filter_out_generated_sources RESULT_VARIABLE)
 
     set (FILTER_OUT_MUTLIVAR_OPTIONS SOURCES)
@@ -389,6 +440,20 @@ function (psq_get_target_command_attach_point TARGET ATTACH_POINT_RETURN)
 
 endfunction ()
 
+# psq_run_tool_on_source:
+#
+# Run a static analysis tool on a source file during TARGET. All of the
+# target's C and C++ sources are extracted from its definition and the
+# specified COMMAND is run on each of them. The string @SOURCE@ is replaced
+# with the source file name in the arguments for COMMAND.
+#
+# TARGET: The target to run the tool for.
+# SOURCE: The source file to check.
+# TOOL_NAME: The name of the tool. This will be shown when the command
+#            runs as "Analyzing @SOURCE@ with ${TOOL_NAME}"
+# COMMAND: The command to run to invoke this tool. @SOURCE@ is replaced
+#          with the source file path.
+# [Optional] DEPENDS: Targets and sources running this tool depends on.
 function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     set (RUN_TOOL_ON_SOURCE_SINGLEVAR_ARGS WORKING_DIRECTORY)
@@ -442,6 +507,21 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
 endfunction ()
 
+# psq_run_tool_for_each_source:
+#
+# Run a static analysis tool on each source file for TARGET. All of the
+# target's C and C++ sources are extracted from its definition and the
+# specified COMMAND is run on each of them. The string @SOURCE@ is replaced
+# with the source file name in the arguments for COMMAND.
+#
+# TARGET: The target to run the tool for.
+# TOOL_NAME: The name of the tool. This will be shown when the command
+#            runs as "Analyzing @SOURCE@ with ${TOOL_NAME}"
+# COMMAND: The command to run to invoke this tool. @SOURCE@ is replaced
+#          with the source file path.
+# [Optional] CHECK_GENERATED: Include generated files in the analysis.
+#                             Generated files are not included by default.
+# [Optional] DEPENDS: Targets and sources running this tool depends on.
 function (psq_run_tool_for_each_source TARGET TOOL_NAME)
 
     set (RUN_COMMAND_OPTION_ARGS CHECK_GENERATED)
@@ -474,6 +554,18 @@ function (psq_run_tool_for_each_source TARGET TOOL_NAME)
 
 endfunction ()
 
+# psq_make_compilation_db:
+#
+# Creates a JSON Compilation Database in relation to the specified TARGET.
+#
+# TARGET: Target to create JSON compilation database for.
+# CUSTOM_COMPILATION_DB_DIR_RETURN: Variable to store location of compilation
+#                                   database for the specified TARGET
+# [Optional] C_SOURCES: C-language sources to include.
+# [Optional] CXX_SOURCES: C++-language sources to include.
+# [Optional] INTERNAL_INCLUDE_DIRS: Non-system include directories.
+# [Optional] EXTERNAL_INCLUDE_DIRS: System include directories.
+# [Optional] DEFINES: Extra definitions to set.
 function (psq_make_compilation_db TARGET
                                   CUSTOM_COMPILATION_DB_DIR_RETURN)
 
