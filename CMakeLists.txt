@@ -646,7 +646,10 @@ function (psq_test_run_tool_on_source_has_comment)
 
     endfunction ()
 
-    cmake_unit_configure_test (CONFIGURE COMMAND psq_configure
+    cmake_unit_configure_test (PRECONFIGURE OPTIONS
+                                            SKIP_GENERATOR_REGEX
+                                            "^.*Ninja.*$"
+                               CONFIGURE COMMAND psq_configure
                                VERIFY COMMAND psq_verify
                                INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX)
 endfunction ()
