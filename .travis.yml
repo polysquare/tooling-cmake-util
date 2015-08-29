@@ -1,22 +1,35 @@
 language: cpp
+sudo: false
+cache:
+  directories:
+  - container
 env:
-  - CMAKE_GENERATOR="Unix Makefiles"
-  - CMAKE_GENERATOR="Ninja"
-before_install:
-  - git submodule update --init --recursive
-  - sudo apt-add-repository -y ppa:kalakris/cmake
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq `cat DEPENDENCIES`
-  - cmake --version
-  # Workaround to get Ninja to display verbose output
-  - if [[ $CMAKE_GENERATOR == "Ninja" ]] ; then
-     echo -e '!#/bin/bash\n/usr/bin/ninja -v $@' > ninja;
-     chmod +x ninja;
-     export PATH=`pwd`:${PATH};
-    fi
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" DEPLOY="1"
+- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="latest"
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="3.0"
+- CMAKE_GENERATOR="Ninja" CMAKE_VERSION="3.0"
+- CMAKE_GENERATOR="Unix Makefiles" CMAKE_VERSION="latest" COVERAGE="--use-cmake-coverage"
+install:
+- eval $(curl -LSs --retry 100 --connect-timeout 3 public-travis-scripts.polysquare.org/bootstrap.py
+  | python /dev/stdin -d container -s setup/bii/setup.py -e bash -p /dev/stdout --cmake-version
+  ${CMAKE_VERSION})
 script:
-  - mkdir -p test/build
-  - pushd test/build
-  - cmake .. &&
-    ctest --output-on-failure &&
-    popd
+- polysquare_run check/bii/check.py ${COVERAGE} --cmake-namespace psq --generator
+  "${CMAKE_GENERATOR}" --block "smspillaz/tooling-cmake-util"
+before_cache:
+- polysquare_cleanup
+after_success:
+- polysquare_run coverage/bii/coverage.py
+before_deploy:
+- polysquare_run deploy/bii/deploy.py
+deploy:
+  provider: biicode
+  skip_cleanup: true
+  user:
+    secure: mRq7RLxY4jPHCj2Fuq75pLrpVUm0Xmy5jOmRZh66+q8UNwaihPp7Q95eWv+3Eb0+WcDNCOtaPUMrn0pYq2W+LjDOM2+qBF2+vrdNBk/u+kmW+mxbJTJdWRTETn9JJK2C+djGADeMCCYrXple2p9lkSslnQ/S+KUJfy3yZX3G3og=
+  password:
+    secure: YN9FmcJhRLwinUtPBLwKadt6v5jxNEPPLBY4US7Ea9HmcOayRh+wH0+w1aPBemdLIIlz8KbvVgURHZL2FHLzk7uetx+AzSCLrTVB8a4G4A55bTV4bBgans3SPilnEKXIY8fH/BDbaR/w9K0h2iOFVJcjvq1K5VGq4ErtCVRayDk=
+  on:
+    repo: polysquare/tooling-cmake-util
+    branch: master
+    condition: ${DEPLOY} = 1
