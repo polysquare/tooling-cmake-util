@@ -1,11 +1,16 @@
 AppVeyor
 basename
+Biicode
+C
 CFLAGS
 CMake
 cmake
 CMAKE_COMMAND
+CMAKE_EXPORT_COMPILE_COMMANDS
+CXX
 CXXFLAGS
 facto
+JSON
 linkable
 polysquare
 PRE_BUILD
