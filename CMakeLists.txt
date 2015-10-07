@@ -656,8 +656,8 @@ endfunction ()
 
 # Adds a custom target with a source and calls psq_run_tool_on_source
 # on it (the "tool" in this case being ${CMAKE_COMMAND} -E touch
-# /${SOURCE_FILE}.ToolRun), but writes the stampfile first before we get a chance
-# to run the tool.
+# /${SOURCE_FILE}.ToolRun), but writes the stampfile first before we get a
+# chance to run the tool.
 function (psq_test_run_tool_on_source_not_run_again_if_stampfile_exists)
 
     cmake_unit_get_dirs (BINARY_DIR SOURCE_DIR)
