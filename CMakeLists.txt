@@ -1233,8 +1233,7 @@ function (psq_test_special_compilation_d_b_use_cxx_compiler_for_cpp_header)
 
         psq_make_sources_and_compilation_db ("Source.cpp" CXX)
         set (COMPILE_COMMANDS "${COMPILATION_DB_DIR}/compile_commands.json")
-        cmake_unit_escape_string ("${CMAKE_CXX_COMPILER}" ESCAPED_CXX_COMPILER)
-        string (REPLACE "+" "." ESCAPED_CXX_COMPILER "${CMAKE_CXX_COMPILER}")
+        cmake_unit_escape_string ("${CXX_COMPILER_BASE}" ESCAPED_CXX_COMPILER)
         cmake_unit_assert_that ("${COMPILE_COMMANDS}"
                                 file_contents any_line matches_regex
                                 "^.*${ESCAPED_CXX_COMPILER}.*Header.h.*$")
