@@ -744,7 +744,7 @@ endfunction ()
 # psq_run_tool_for_each_source on it (the "tool" in this case being
 # ${CMAKE_COMMAND} -E touch /${SOURCE}.ToolRun). Pass CHECK_GENERATED to
 # psq_run_tool_for_each_source
-function (psq_test_run_tool_on_sources_check_generated)
+function (psq_test_run_tool_check_generated)
 
     cmake_unit_get_dirs (BINARY_DIR SOURCE_DIR)
 
@@ -779,7 +779,7 @@ endfunction ()
 # Adds a custom target with a normal and generated source and calls
 # psq_run_tool_for_each_source on it (the "tool" in this case being
 # ${CMAKE_COMMAND} -E touch /${SOURCE}.ToolRun)
-function (psq_test_run_tool_on_sources_filter_generated)
+function (psq_test_run_tool_filter_generated)
 
     cmake_unit_get_dirs (BINARY_DIR SOURCE_DIR)
 
