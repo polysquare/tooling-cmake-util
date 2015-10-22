@@ -1,5 +1,5 @@
 clone_depth: 10
-clone_folder: C:/projects/cmake-header-language
+clone_folder: C:/projects/tooling-cmake-util
 
 cache:
  - C:/container -> appveyor.yml
