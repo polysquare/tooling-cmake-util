@@ -4,17 +4,9 @@
 #
 # See /LICENCE.md for Copyright information
 
-if (NOT BIICODE)
-
-    set (CMAKE_MODULE_PATH
-         "${CMAKE_SOURCE_DIR}/bii/deps"
-         "${CMAKE_MODULE_PATH}")
-
-endif ()
-
-include ("smspillaz/cmake-include-guard/IncludeGuard")
+include ("cmake/cmake-include-guard/IncludeGuard")
 cmake_include_guard (SET_MODULE_PATH)
-include ("smspillaz/cmake-header-language/DetermineHeaderLanguage")
+include ("cmake/cmake-header-language/DetermineHeaderLanguage")
 include (CMakeParseArguments)
 
 # psq_append_to_global_property_unique
