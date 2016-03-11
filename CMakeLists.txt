@@ -1300,6 +1300,33 @@ function (psq_test_strip_extraneous_sources)
 
 endfunction ()
 
+# Add some sources and defines to a library target and set
+# its COMPILE_FLAGS. Those flags should appear in the compilation database.
+function (psq_test_special_compilation_db_use_compile_flags_property)
+
+    function (psq_configure)
+
+        cmake_unit_create_simple_executable (target)
+        set_property (TARGET target PROPERTY COMPILE_FLAGS "-CUSTOMFLAG")
+        psq_make_compilation_db (target COMPILATION_DB_DIR
+                                 CXX_SOURCES
+                                 "Source.cpp")
+
+        set (COMPILE_COMMANDS "${COMPILATION_DB_DIR}/compile_commands.json")
+        cmake_unit_assert_that ("${COMPILE_COMMANDS}"
+                                file_contents any_line matches_regex
+                                "^.*Source.cpp.*-CUSTOMFLAG.*$")
+
+    endfunction ()
+
+    cmake_unit_configure_config_only_test (INVOKE_CONFIGURE OPTIONS
+                                                            LANGUAGES
+                                                            C
+                                                            CXX
+                                           CONFIGURE COMMAND psq_configure)
+
+endfunction ()
+
 cmake_unit_init (NAMESPACE "psq"
                  COVERAGE_FILES
                  "${CMAKE_CURRENT_LIST_DIR}/PolysquareToolingUtil.cmake")
