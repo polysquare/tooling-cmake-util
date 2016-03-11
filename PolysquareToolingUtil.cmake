@@ -670,6 +670,9 @@ function (psq_make_compilation_db TARGET
 
         endif ()
 
+        get_property (COMPILE_FLAGS TARGET "${TARGET}" PROPERTY COMPILE_FLAGS)
+        list (APPEND COMPILER_COMMAND_LINE "${COMPILE_FLAGS}")
+
         string (REPLACE ";" " "
                 COMPILER_COMMAND_LINE "${COMPILER_COMMAND_LINE}")
         set (COMPILATION_DB_FILE_CONTENTS
