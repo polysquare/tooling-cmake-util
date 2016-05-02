@@ -642,42 +642,6 @@ function (psq_test_run_tool_on_source_has_comment)
                                INVOKE_CONFIGURE OPTIONS LANGUAGES C CXX)
 endfunction ()
 
-# Adds a custom target with a source and calls psq_run_tool_on_source
-# on it (the "tool" in this case being ${CMAKE_COMMAND} -E touch
-# /${SOURCE_FILE}.ToolRun), but writes the stampfile first before we get a
-# chance to run the tool.
-function (psq_test_run_tool_on_source_not_run_again_if_stampfile_exists)
-
-    cmake_unit_get_dirs (BINARY_DIR SOURCE_DIR)
-
-    function (psq_configure)
-
-        set (STAMPFILE "${BINARY_DIR}/Source.cpp.Tool.stamp")
-        file (WRITE "${STAMPFILE}" "")
-        psq_run_tool_on_preexisting_source ("Tool")
-
-    endfunction ()
-
-    function (psq_verify)
-
-        cmake_unit_get_log_for (INVOKE_BUILD OUTPUT BUILD_OUTPUT)
-        cmake_unit_escape_string (ESCAPED_CMAKE_COMMAND "${CMAKE_COMMAND}")
-        set (TOOL_COMMAND_REGEX
-             "^.*${ESCAPED_CMAKE_COMMAND} -E touch .*Source.cpp.ToolRun*$")
-        cmake_unit_assert_that ("${BUILD_OUTPUT}"
-                                not file_contents any_line matches_regex
-                                "${TOOL_COMMAND_REGEX}")
-
-    endfunction ()
-
-    cmake_unit_configure_test (PRECONFIGURE OPTIONS
-                                            SKIP_GENERATOR_REGEX
-                                            "^.*Visual Studio.*$"
-                                            "^.*Ninja.*$"
-                               CONFIGURE COMMAND psq_configure
-                               VERIFY COMMAND psq_verify)
-endfunction ()
-
 # Adds a custom target with two sources and calls psq_run_tool_for_each_source
 # on it (the "tool" in this case being ${CMAKE_COMMAND} -E touch
 # /${SOURCE}.ToolRun)
