@@ -461,8 +461,9 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     # Get the basename of the file, used for the comment and stamp.
     get_filename_component (SRCNAME "${SOURCE}" NAME)
+    set (TOOLING_SIG "stamp")
     set (STAMPFILE
-         "${CMAKE_CURRENT_BINARY_DIR}/${SRCNAME}.${TOOL_NAME}.stamp")
+         "${CMAKE_CURRENT_BINARY_DIR}/${SRCNAME}.${TOOL_NAME}.${TOOLING_SIG}")
     set (COMMENT "Analyzing ${SRCNAME} with ${TOOL_NAME}")
 
     if (RUN_TOOL_ON_SOURCE_WORKING_DIRECTORY)
@@ -472,17 +473,39 @@ function (psq_run_tool_on_source TARGET SOURCE TOOL_NAME)
 
     endif ()
 
-    # Get all the sources on this target and make the new check depend on all
-    # of them. The reason why we depend on all of them instead of just the
-    # source that we are checking is that the source might include  a header
-    # file which is also generated. If the source includes that header file
+    # Get all the sources on this target and make the new check depend on the
+    # generated ones. The reason being that the source that we are checking
+    # might include a header file which is also generated and it will need to
+    # be generated first. If the source includes that header file
     # that header file doesn't exist, then the build will fail.
-    psq_strip_extraneous_sources (TARGET_SOURCES ${TARGET})
+    get_property (ALL_TARGET_SOURCES TARGET "${TARGET}" PROPERTY SOURCES)
+    set (TARGET_SOURCES_TO_GENERATE "${SOURCE}")
+    foreach (TARGET_SOURCE ${ALL_TARGET_SOURCES})
+        get_property (SOURCE_IS_GENERATED
+                      SOURCE "${TARGET_SOURCE}"
+                      PROPERTY GENERATED)
+        if (SOURCE_IS_GENERATED)
+            string (FIND "${TARGET_SOURCE}" "${TOOLING_SIG}" SIG_IDX REVERSE)
+            string (LENGTH "${TARGET_SOURCE}" TARGET_SOURCE_LEN)
+
+            if (NOT SIG_IDX EQUAL -1)
+                math (EXPR SIG_SIZE "${TARGET_SOURCE_LEN} - ${SIG_IDX}")
+            else ()
+                set (SIG_SIZE 0)
+            endif ()
+
+            # Exclude any
+            if (SIG_IDX EQUAL -1 OR NOT SIG_SIZE EQUAL 5)
+                list (APPEND TARGET_SOURCES_TO_GENERATE "${TARGET_SOURCE}")
+            endif ()
+        endif ()
+    endforeach ()
 
     add_custom_command (OUTPUT ${STAMPFILE}
                         COMMAND ${COMMAND}
                         COMMAND "${CMAKE_COMMAND}" -E touch "${STAMPFILE}"
-                        DEPENDS ${TARGET_SOURCES} ${RUN_TOOL_ON_SOURCE_DEPENDS}
+                        DEPENDS ${TARGET_SOURCES_TO_GENERATE}
+                                ${RUN_TOOL_ON_SOURCE_DEPENDS}
                         ${WORKING_DIRECTORY_OPTION}
                         COMMENT ${COMMENT}
                         VERBATIM)
