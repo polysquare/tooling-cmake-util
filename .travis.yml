@@ -26,6 +26,7 @@ install:
   --cmake-version ${CMAKE_VERSION})
 script:
 - find container/_languages/python
+- polysquare_run check.py
 - polysquare_run check/conan/check.py ${COVERAGE} --cmake-namespace psq --generator
   "${CMAKE_GENERATOR}"
 before_cache:
