@@ -2,7 +2,7 @@ from conans import ConanFile
 from conans.tools import download, unzip
 import os
 
-VERSION = "0.0.10"
+VERSION = "0.0.11"
 
 
 class ToolingCMakeUtilConan(ConanFile):
