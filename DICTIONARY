@@ -12,6 +12,7 @@ CXXFLAGS
 facto
 JSON
 linkable
+POLYSQUARE
 polysquare
 PRE_BUILD
 PRE_LINK

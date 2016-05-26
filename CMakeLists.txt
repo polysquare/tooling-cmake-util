@@ -14,8 +14,7 @@ cmake_minimum_required (VERSION 2.8)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 set (_CURRENT_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 
-include ("cmake/cmake-unit/CMakeUnitRunner")
-include ("cmake/cmake-unit/CMakeUnit")
+include ("cmake/cmake-module-common/Common" OPTIONAL)
 include (PolysquareToolingUtil)
 
 # Checks that our ON command line switch for a variable being true is added.
@@ -1291,12 +1290,17 @@ function (psq_test_special_compilation_db_use_compile_flags_property)
 
 endfunction ()
 
-cmake_unit_init (NAMESPACE "psq"
-                 COVERAGE_FILES
-                 "${CMAKE_CURRENT_LIST_DIR}/PolysquareToolingUtil.cmake")
+set (CMAKE_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/PolysquareToolingUtil.cmake"
+     "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+set (MARKDOWN_FILES
+     "${CMAKE_CURRENT_LIST_DIR}/LICENCE.md"
+     "${CMAKE_CURRENT_LIST_DIR}/README.md")
 
-if (BIICODE)
+if (COMMAND cmake_module_add_common_targets)
 
-    add_bii_targets ()
+    cmake_module_add_common_targets (NAMESPACE "psq"
+                                     CMAKE_FILES ${CMAKE_FILES}
+                                     DOCUMENTATION_FILES ${MARKDOWN_FILES})
 
 endif ()
