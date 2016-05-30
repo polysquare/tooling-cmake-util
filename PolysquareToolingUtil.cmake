@@ -682,8 +682,21 @@ function (psq_make_compilation_db TARGET
               "\\\"${FULL_PATH}\\\"")
 
         # All includes
+        set (SYSTEM_INCLUDE_FLAG "-isystem")
+
+        if (LANGUAGE STREQUAL "C" AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+            set (SYSTEM_INCLUDE_FLAG "-I")
+
+        elseif (LANGUAGE STREQUAL "CXX" AND
+                CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+            set (SYSTEM_INCLUDE_FLAG "-I")
+
+        endif ()
+
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
-                                                -isystem
+                                                "${SYSTEM_INCLUDE_FLAG}"
                                                 LIST
                                                 ${COMPDB_EXTERNAL_INCLUDE_DIRS}
                                                 WRAP_IN_QUOTES)
