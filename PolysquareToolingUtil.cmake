@@ -649,14 +649,15 @@ function (psq_make_compilation_db TARGET
         # Compiler and language options
         if (LANGUAGE STREQUAL "CXX")
 
-            list (APPEND COMPILER_COMMAND_LINE
-                  "\\\"${CMAKE_CXX_COMPILER}\\\""
-                  -x
-                  c++)
+            list (APPEND COMPILER_COMMAND_LINE "\\\"${CMAKE_CXX_COMPILER}\\\"")
 
             if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
                 list (APPEND COMPILER_COMMAND_LINE "--driver-mode=cl")
+
+            else ()
+
+                list (APPEND COMPILER_COMMAND_LINE -x c++)
 
             endif ()
 
