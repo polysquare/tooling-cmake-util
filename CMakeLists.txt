@@ -1172,7 +1172,10 @@ function (psq_test_special_compilation_d_b_use_c_language_opt_for_c_header)
 
     endfunction ()
 
-    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure
+                                           PRECONFIGURE OPTIONS
+                                                        SKIP_GENERATOR_REGEX
+                                                        "NMake.*|Visual.*")
 
 endfunction ()
 
@@ -1191,7 +1194,11 @@ function (psq_test_special_compilation_d_b_use_cxx_compiler_for_cpp_header)
 
     endfunction ()
 
-    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure
+                                           PRECONFIGURE OPTIONS
+                                                        SKIP_GENERATOR_REGEX
+                                                        "NMake.*|Visual.*")
+
 
 endfunction ()
 
@@ -1230,7 +1237,10 @@ function (psq_test_special_compilation_d_b_use_cxx_language_opt_for_cpp_header)
 
     endfunction ()
 
-    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure)
+    cmake_unit_configure_config_only_test (CONFIGURE COMMAND psq_configure
+                                           PRECONFIGURE OPTIONS
+                                                        SKIP_GENERATOR_REGEX
+                                                        "NMake.*|Visual.*")
 
 endfunction ()
 
