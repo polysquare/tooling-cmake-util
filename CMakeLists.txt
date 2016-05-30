@@ -1105,9 +1105,20 @@ function (psq_test_special_compilation_d_b_includes)
                                              EXTERNAL_INCLUDE_DIRS
                                              "${SOURCE_EXTERNAL_INCLUDE_DIRS}")
         set (COMPILE_COMMANDS "${COMPILATION_DB_DIR}/compile_commands.json")
+
+        if (CMAKE_GENERATOR MATCHES "^.*(Visual|NMake).*$")
+
+            set (SYS_INCL "-I")
+
+        else ()
+
+            set (SYS_INCL "-isystem")
+
+        endif ()
+
         cmake_unit_assert_that ("${COMPILE_COMMANDS}"
                                 file_contents any_line matches_regex
-                                "^.*-isystem.*external.*$")
+                                "^.*${SYS_INCL}.*external.*$")
         cmake_unit_assert_that ("${COMPILE_COMMANDS}"
                                 file_contents any_line matches_regex
                                 "^.*-I.*internal.*$")
