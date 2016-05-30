@@ -113,14 +113,18 @@ endfunction ()
 function (psq_append_each_to_options_with_prefix MAIN_LIST PREFIX)
 
     cmake_parse_arguments (APPEND
-                           ""
+                           "WRAP_IN_QUOTES"
                            ""
                            "LIST"
                            ${ARGN})
 
     foreach (ITEM ${APPEND_LIST})
 
-        list (APPEND ${MAIN_LIST} ${PREFIX}${ITEM})
+        if (APPEND_WRAP_IN_QUOTES)
+            list (APPEND ${MAIN_LIST} "\\\"${PREFIX}${ITEM}\\\"")
+        else ()
+            list (APPEND ${MAIN_LIST} ${PREFIX}${ITEM})
+        endif ()
 
     endforeach ()
 
@@ -646,14 +650,26 @@ function (psq_make_compilation_db TARGET
         if (LANGUAGE STREQUAL "CXX")
 
             list (APPEND COMPILER_COMMAND_LINE
-                  ${CMAKE_CXX_COMPILER}
+                  "\\\"${CMAKE_CXX_COMPILER}\\\""
                   -x
                   c++)
+
+            if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+                list (APPEND COMPILER_COMMAND_LINE "--driver-mode=cl")
+
+            endif ()
 
         elseif (LANGUAGE STREQUAL "C")
 
             list (APPEND COMPILER_COMMAND_LINE
-                  ${CMAKE_C_COMPILER})
+                  "\\\"${CMAKE_C_COMPILER}\\\"")
+
+            if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+                list (APPEND COMPILER_COMMAND_LINE "--driver-mode=cl")
+
+            endif ()
 
         endif ()
 
@@ -662,23 +678,24 @@ function (psq_make_compilation_db TARGET
               -o
               "CMakeFiles/${TARGET}.dir/${BASENAME}.o"
               -c
-              "${FULL_PATH}")
+              "\\\"${FULL_PATH}\\\"")
 
         # All includes
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
                                                 -isystem
                                                 LIST
-                                                ${COMPDB_EXTERNAL_INCLUDE_DIRS})
+                                                ${COMPDB_EXTERNAL_INCLUDE_DIRS}
+                                                WRAP_IN_QUOTES)
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
                                                 -I
                                                 LIST
-                                                ${COMPDB_INTERNAL_INCLUDE_DIRS})
+                                                ${COMPDB_INTERNAL_INCLUDE_DIRS}
+                                                WRAP_IN_QUOTES)
 
         # All defines
         psq_append_each_to_options_with_prefix (COMPILER_COMMAND_LINE
                                                 -D
                                                 LIST ${COMPDB_DEFINES})
-
 
         # CXXFLAGS / CFLAGS
         if (LANGUAGE STREQUAL "CXX")
